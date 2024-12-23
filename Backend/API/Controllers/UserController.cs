@@ -7,21 +7,13 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("[controller]/[action]")]
-public class UserController : ControllerBase
+public class UserController(ILogger<UserController> logger, IUserRepository userRepository)
+    : ControllerBase
 {
-    private readonly ILogger<UserController> _logger;
-    private readonly IUserRepository _userRepository;
-
-    public UserController(ILogger<UserController> logger, IUserRepository userRepository)
-    {
-        _logger = logger;
-        _userRepository = userRepository;
-    }
-
     [HttpGet(Name = "Get")]
     public async Task<ActionResult<UserDto>> Get(int id)
     {
-        var user = await _userRepository.Get(id);
+        var user = await userRepository.Get(id);
         if (user == null)
         {
             return NotFound();
@@ -29,28 +21,28 @@ public class UserController : ControllerBase
 
         return (UserDto)user;
     }
-    
+
     [HttpGet(Name = "GetAll")]
     public async Task<IEnumerable<UserDto>> GetAll()
     {
-        return (await _userRepository.GetAll()).Select(user => (UserDto)user);
+        return (await userRepository.GetAll()).Select(user => (UserDto)user);
     }
-    
+
     [HttpPost(Name = "Add")]
-    public async Task<ActionResult<User>> Add(UserDto user)
+    public async Task<ActionResult> Add(UserDto user)
     {
-        await _userRepository.Add(new User
+        await userRepository.Add(new User
         {
             Name = user.Name,
             Initials = user.Initials
         });
         return Created();
     }
-    
+
     [HttpDelete(Name = "Delete")]
     public async Task<ActionResult<User>> Delete(int id)
     {
-        await _userRepository.Delete(id);
+        await userRepository.Delete(id);
         return Ok();
     }
 }
