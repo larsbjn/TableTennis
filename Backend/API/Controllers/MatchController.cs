@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[ApiController]
 [Route("[controller]/[action]")]
 public class MatchController(
     ILogger<MatchController> logger,
@@ -13,8 +12,14 @@ public class MatchController(
     IUserRepository userRepository)
     : ControllerBase
 {
-
-    [HttpGet(Name = "Get")]
+    /// <summary>
+    /// Retrieves a match by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the match to retrieve.</param>
+    /// <returns>A match object if found; otherwise, a 404 Not Found response.</returns>
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<MatchDto>> Get(int id)
     {
         var match = await matchRepository.Get(id);
@@ -26,13 +31,25 @@ public class MatchController(
         return (MatchDto)match;
     }
 
-    [HttpGet(Name = "GetAll")]
+    /// <summary>
+    /// Retrieves all matches.
+    /// </summary>
+    /// <returns>A list of all matches.</returns>
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IEnumerable<MatchDto>> GetAll()
     {
         return (await matchRepository.GetAll()).Select(match => (MatchDto)match);
     }
 
-    [HttpPost(Name = "Add")]
+    /// <summary>
+    /// Adds a new match.
+    /// </summary>
+    /// <param name="match">The match object to add.</param>
+    /// <returns>A 201 Created response if the match is successfully added; otherwise, a 400 Bad Request response.</returns>
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Add(MatchDto match)
     {
         var player1 = await userRepository.Get(match.Player1);
@@ -62,7 +79,13 @@ public class MatchController(
         return Created();
     }
 
-    [HttpDelete(Name = "Delete")]
+    /// <summary>
+    /// Deletes a match by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the match to delete.</param>
+    /// <returns>A 200 OK response if the match is successfully deleted.</returns>
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> Delete(int id)
     {
         await matchRepository.Delete(id);
