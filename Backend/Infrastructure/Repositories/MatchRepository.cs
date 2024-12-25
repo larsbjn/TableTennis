@@ -9,7 +9,11 @@ public class MatchRepository(DatabaseContext databaseContext) : IMatchRepository
 {
     public async Task<IEnumerable<Match>> GetAll()
     {
-        return await databaseContext.Matches.ToListAsync();
+        return await databaseContext.Matches
+            .Include(m => m.Player1)
+            .Include(m => m.Player2)
+            .Include(m => m.Winner)
+            .ToListAsync();
     }
 
     public async Task<Match?> Get(int id)
@@ -18,10 +22,23 @@ public class MatchRepository(DatabaseContext databaseContext) : IMatchRepository
         return match;
     }
 
-    public async Task Add(Match user)
+    public async Task<int> Create(int player1Id, int player2Id)
     {
-        await databaseContext.Matches.AddAsync(user);
+        var player1 = await databaseContext.Users.FindAsync(player1Id);
+        var player2 = await databaseContext.Users.FindAsync(player2Id);
+        if (player1 == null || player2 == null)
+        {
+            throw new ArgumentException("Player not found");
+        }
+
+        var match = new Match
+        {
+            Player1 = player1,
+            Player2 = player2
+        };
+        await databaseContext.Matches.AddAsync(match);
         await databaseContext.SaveChangesAsync();
+        return match.Id;
     }
 
     public async Task Delete(int id)

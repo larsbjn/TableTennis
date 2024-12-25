@@ -42,17 +42,18 @@ public class UserController(ILogger<UserController> logger, IUserRepository user
     /// <summary>
     /// Adds a new user.
     /// </summary>
-    /// <param name="user">The user object to add.</param>
+    /// <param name="name">The name of the player</param>
+    /// <param name="initials">The initials of the player</param>
     /// <returns>A 201 Created response if the user is successfully added; otherwise, a 400 Bad Request response.</returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> Add(UserDto user)
+    public async Task<ActionResult> Create(string name, string initials)
     {
-        await userRepository.Add(new User
+        await userRepository.Create(new User
         {
-            Name = user.Name,
-            Initials = user.Initials
+            Name = name,
+            Initials = initials
         });
         return Created();
     }

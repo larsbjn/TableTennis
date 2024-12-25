@@ -1,0 +1,22 @@
+.container {
+  > * {
+    margin: 15px auto;
+  }
+  
+  .player-select {
+    > * {
+      margin: 15px auto;
+    }
+  }
+  
+    .versus-icon {
+        width: 100px;
+    }
+    
+  
+  .align-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

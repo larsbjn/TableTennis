@@ -45,38 +45,23 @@ public class MatchController(
     /// <summary>
     /// Adds a new match.
     /// </summary>
-    /// <param name="match">The match object to add.</param>
+    /// <param name="player1Id">Player 1 id</param>
+    /// <param name="player2Id">Player 2 id</param>
     /// <returns>A 201 Created response if the match is successfully added; otherwise, a 400 Bad Request response.</returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> Add(MatchDto match)
+    public async Task<ActionResult<int>> Create(int player1Id, int player2Id)
     {
-        var player1 = await userRepository.Get(match.Player1);
-        var player2 = await userRepository.Get(match.Player2);
-
-        if (player1 == null || player2 == null)
+        try
+        {
+            var match = await matchRepository.Create(player1Id, player2Id);
+            return Created($"/match/{match}", match);
+        }
+        catch (ArgumentException e)
         {
             return BadRequest();
         }
-
-        var winner = match.Winner == match.Player1 ? player1 : match.Winner == match.Player2 ? player2 : null;
-        if (winner == null)
-        {
-            return BadRequest();
-        }
-
-        await matchRepository.Add(new Match
-        {
-            Player1 = player1,
-            Player2 = player2,
-            Winner = winner,
-            Date = match.Date,
-            News = match.News,
-            ExtraInfo1 = match.ExtraInfo1,
-            ExtraInfo2 = match.ExtraInfo2
-        });
-        return Created();
     }
 
     /// <summary>
