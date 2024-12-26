@@ -1,8 +1,10 @@
+using API.Handlers;
 using API.Hubs;
+using API.Interfaces.Hubs;
 using API.Models.Dtos;
 using Domain.Interfaces;
-using Domain.Interfaces.Hubs;
 using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Services;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -14,6 +16,7 @@ public class MatchController(
     ILogger<MatchController> logger,
     IMatchRepository matchRepository,
     IUserRepository userRepository,
+    RankingHandler rankingHandler,
     IEloService eloService,
     IHubContext<RankingHub, IRankingHub> rankingHub)
     : ControllerBase
@@ -66,7 +69,11 @@ public class MatchController(
             
             await eloService.CalculateElo(match);
 
-            await rankingHub.Clients.All.UpdatedRanking(420, "EDGE");
+            // Update rankings
+            var matches = await matchRepository.GetAll();
+            var users = await userRepository.GetAll();
+            var rankings = rankingHandler.GetRankings(matches.ToList(), users.ToList());
+            await rankingHub.Clients.All.UpdatedRanking(rankings);
             return Ok(updatedMatch);
         }
         catch (ArgumentException e)

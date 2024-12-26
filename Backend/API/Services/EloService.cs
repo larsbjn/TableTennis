@@ -1,5 +1,6 @@
 using Domain.Interfaces;
 using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Services;
 using Domain.Models;
 
 namespace API.Services;

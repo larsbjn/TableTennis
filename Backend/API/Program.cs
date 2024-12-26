@@ -1,7 +1,9 @@
+using API.Handlers;
 using API.Hubs;
 using API.Services;
 using Domain.Interfaces;
 using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Services;
 using Infrastructure.DbContext;
 using Infrastructure.Repositories;
 
@@ -29,6 +31,7 @@ builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 builder.Services.AddScoped<IEloService, EloService>();
+builder.Services.AddScoped<RankingHandler>();
 
 builder.Services.AddSignalR();
 
