@@ -21,8 +21,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-
-builder.Services.AddTransient<DatabaseContext, DatabaseContext>();
+builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 

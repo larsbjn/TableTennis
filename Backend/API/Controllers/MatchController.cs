@@ -35,44 +35,29 @@ public class MatchController(
     /// <summary>
     /// Updates a match with the provided details.
     /// </summary>
-    /// <param name="id">The ID of the match to update.</param>
-    /// <param name="winnerId">The ID of the winning player (optional).</param>
-    /// <param name="news">News related to the match (optional).</param>
-    /// <param name="extraInfo1">Additional information 1 (optional).</param>
-    /// <param name="extraInfo2">Additional information 2 (optional).</param>
+    /// <param name="updateMatchDto">The updated info for the match</param>
     /// <returns>An updated match object if successful; otherwise, a 400 Bad Request response.</returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<MatchDto>> Update(int id, int? winnerId, string? news, string? extraInfo1, string? extraInfo2)
+    public async Task<ActionResult<MatchDto>> Update(UpdateMatchDto updateMatchDto)
     {
         try
         {
-            
-            var updatedMatch = await matchRepository.Update(id, winnerId, news, extraInfo1, extraInfo2);
-            return Ok(updatedMatch);
-        }
-        catch (ArgumentException e)
-        {
-            return BadRequest();
-        }
-    }
+            var winner = await userRepository.Get(updateMatchDto.WinnerId ?? 0);
 
-    /// <summary>
-    /// Update the winner of a match
-    /// </summary>
-    /// <param name="matchId">The match id</param>
-    /// <param name="winnerId">The winning player id</param>
-    /// <returns></returns>
-    [HttpPatch]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<MatchDto>> UpdateWinner(int matchId, int winnerId)
-    {
-        try
-        {
-            var match = await matchRepository.UpdateWinner(matchId, winnerId);
-            return Ok((MatchDto)match);
+            if (winner == null) return BadRequest();
+            
+            var match = await matchRepository.Get(updateMatchDto.Id);
+            if (match == null) return BadRequest();
+            
+            match.Winner = winner;
+            match.News = updateMatchDto.News;
+            match.ExtraInfo1 = updateMatchDto.ExtraInfo1;
+            match.ExtraInfo2 = updateMatchDto.ExtraInfo2;
+            
+            var updatedMatch = await matchRepository.Update(match);
+            return Ok(updatedMatch);
         }
         catch (ArgumentException e)
         {

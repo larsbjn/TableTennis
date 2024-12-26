@@ -45,7 +45,6 @@ export default function Match({params}: { params: Promise<{ id: string }> }) {
             extraInfo1: extraInfo1,
             extraInfo2: extraInfo2
         }
-        console.log(match.winner?.id);
         matchClient.update(payload.id, payload.winner?.id, payload.news, payload.extraInfo1, payload.extraInfo2).then(r => {
             setMatch(r);
         });

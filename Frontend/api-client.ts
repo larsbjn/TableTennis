@@ -77,23 +77,23 @@ export class MatchClient {
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
         else if (id !== undefined)
-            url_ += "id=" + encodeURIComponent("" + id) + "&";
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
         if (winnerId === null)
             throw new Error("The parameter 'winnerId' cannot be null.");
         else if (winnerId !== undefined)
-            url_ += "winnerId=" + encodeURIComponent("" + winnerId) + "&";
+            url_ += "WinnerId=" + encodeURIComponent("" + winnerId) + "&";
         if (news === null)
             throw new Error("The parameter 'news' cannot be null.");
         else if (news !== undefined)
-            url_ += "news=" + encodeURIComponent("" + news) + "&";
+            url_ += "News=" + encodeURIComponent("" + news) + "&";
         if (extraInfo1 === null)
             throw new Error("The parameter 'extraInfo1' cannot be null.");
         else if (extraInfo1 !== undefined)
-            url_ += "extraInfo1=" + encodeURIComponent("" + extraInfo1) + "&";
+            url_ += "ExtraInfo1=" + encodeURIComponent("" + extraInfo1) + "&";
         if (extraInfo2 === null)
             throw new Error("The parameter 'extraInfo2' cannot be null.");
         else if (extraInfo2 !== undefined)
-            url_ += "extraInfo2=" + encodeURIComponent("" + extraInfo2) + "&";
+            url_ += "ExtraInfo2=" + encodeURIComponent("" + extraInfo2) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -109,57 +109,6 @@ export class MatchClient {
     }
 
     protected processUpdate(response: Response): Promise<MatchDto> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = MatchDto.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("Bad Request", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<MatchDto>(null as any);
-    }
-
-    /**
-     * @param matchId (optional) 
-     * @param winnerId (optional) 
-     * @return OK
-     */
-    updateWinner(matchId: number | undefined, winnerId: number | undefined): Promise<MatchDto> {
-        let url_ = this.baseUrl + "/Match/UpdateWinner?";
-        if (matchId === null)
-            throw new Error("The parameter 'matchId' cannot be null.");
-        else if (matchId !== undefined)
-            url_ += "matchId=" + encodeURIComponent("" + matchId) + "&";
-        if (winnerId === null)
-            throw new Error("The parameter 'winnerId' cannot be null.");
-        else if (winnerId !== undefined)
-            url_ += "winnerId=" + encodeURIComponent("" + winnerId) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "PATCH",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdateWinner(_response);
-        });
-    }
-
-    protected processUpdateWinner(response: Response): Promise<MatchDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
