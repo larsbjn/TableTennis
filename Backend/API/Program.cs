@@ -1,3 +1,4 @@
+using API.Hubs;
 using Domain.Interfaces.Repositories;
 using Infrastructure.DbContext;
 using Infrastructure.Repositories;
@@ -17,13 +18,16 @@ builder.Services.AddCors(options =>
     {
         b.WithOrigins("http://localhost:3000")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
 builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -34,6 +38,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapHub<RankingHub>("/rankingHub");
 
 app.UseHttpsRedirection();
 app.UseCors("AllowSpecificOrigin");

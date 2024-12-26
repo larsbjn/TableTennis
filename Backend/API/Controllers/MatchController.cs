@@ -1,7 +1,10 @@
+using API.Hubs;
 using API.Models.Dtos;
+using Domain.Interfaces.Hubs;
 using Domain.Interfaces.Repositories;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace API.Controllers;
 
@@ -9,7 +12,8 @@ namespace API.Controllers;
 public class MatchController(
     ILogger<MatchController> logger,
     IMatchRepository matchRepository,
-    IUserRepository userRepository)
+    IUserRepository userRepository,
+    IHubContext<RankingHub, IRankingHub> rankingHub)
     : ControllerBase
 {
     /// <summary>
@@ -57,6 +61,8 @@ public class MatchController(
             match.ExtraInfo2 = updateMatchDto.ExtraInfo2;
             
             var updatedMatch = await matchRepository.Update(match);
+
+            await rankingHub.Clients.All.UpdatedRanking(420, "EDGE");
             return Ok(updatedMatch);
         }
         catch (ArgumentException e)
