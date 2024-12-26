@@ -26,16 +26,31 @@ public class MatchRepository(DatabaseContext databaseContext) : IMatchRepository
         return match;
     }
 
-    public async Task Update(Match match)
+    public async Task<Match> Update(int id, int? winnerId, string? news, string? extraInfo1, string? extraInfo2)
     {
-        databaseContext.Matches.Update(match);
+        var entity = await Get(id);
+        if (entity == null)
+        {
+            throw new ArgumentException("Match not found");
+        }
+        var winner = await databaseContext.Users.FindAsync(winnerId);
+        if (winner != null)
+        {
+            entity.Winner = winner;
+        }
+        entity.News = news;
+        entity.ExtraInfo1 = extraInfo1;
+        entity.ExtraInfo2 = extraInfo2;
+        
+        databaseContext.Matches.Update(entity);
         await databaseContext.SaveChangesAsync();
+        return entity;
     }
 
     public async Task<Match> UpdateWinner(int id, int winnerId)
     {
         var winner = await databaseContext.Users.FindAsync(winnerId);
-        var match = await databaseContext.Matches.FindAsync(id);
+        var match = await Get(id);
         if (winner == null || match == null)
         {
             throw new ArgumentException("Winner or match not found");
