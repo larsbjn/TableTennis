@@ -1,5 +1,6 @@
 'use client'
 import {Col, Container, Row, Table} from "react-bootstrap";
+import Pagination from 'react-bootstrap/Pagination';
 import {MatchDto} from "@/api-client";
 import React, {useEffect} from "react";
 import {matchClient} from "@/api-clients";
@@ -7,10 +8,82 @@ import styles from './matches.module.scss';
 
 export default function Matches() {
     const [matches, setMatches] = React.useState<Array<MatchDto>>([]);
+    const [page, setPage] = React.useState<number>(0);
+    const itemsPerPage = 10;
+    const numberOfPages = Math.ceil(matches.length / itemsPerPage);
+
+    let items = [];
+    if (numberOfPages <= 5) {
+        for (let number = 0; number < numberOfPages; number++) {
+            items.push(
+                <Pagination.Item key={number} onClick={() => {
+                    setPage(number);
+                }} active={number === page}>
+                    {number + 1}
+                </Pagination.Item>,
+            );
+        }
+    } else {
+        if (page < 3) {
+            for (let number = 0; number < 5; number++) {
+                items.push(
+                    <Pagination.Item key={number} onClick={() => {
+                        setPage(number);
+                    }} active={number === page}>
+                        {number + 1}
+                    </Pagination.Item>,
+                );
+            }
+            items.push(
+                <Pagination.Ellipsis key={numberOfPages - 2} onClick={() => {
+                    setPage(numberOfPages - 2);
+                }}/>
+            );
+            items.push(
+                <Pagination.Item key={numberOfPages} onClick={() => {
+                    setPage(numberOfPages);
+                }} active={numberOfPages === page}>
+                    {numberOfPages}
+                </Pagination.Item>,
+            );
+        } else if (page > numberOfPages - 6) {
+            for (let number = numberOfPages - 7; number < numberOfPages; number++) {
+                items.push(
+                    <Pagination.Item key={number} onClick={() => {
+                        setPage(number);
+                    }} active={number === page}>
+                        {number + 1}
+                    </Pagination.Item>,
+                );
+            }
+        } else {
+            for (let number = page - 2; number < page + 3; number++) {
+                items.push(
+                    <Pagination.Item key={number} onClick={() => {
+                        setPage(number);
+                    }} active={number === page}>
+                        {number + 1}
+                    </Pagination.Item>,
+                );
+            }
+            items.push(
+                <Pagination.Ellipsis key={numberOfPages - 1} onClick={() => {
+                    setPage(numberOfPages - 1);
+                }}/>
+            );
+            items.push(
+                <Pagination.Item key={numberOfPages} onClick={() => {
+                    setPage(numberOfPages);
+                }} active={numberOfPages === page}>
+                    {numberOfPages}
+                </Pagination.Item>,
+            );
+        }
+    }
 
     useEffect(() => {
         matchClient.getAll().then((response) => {
-            setMatches(response);
+            setMatches(response.reverse());
         });
     }, []);
 
@@ -34,7 +107,7 @@ export default function Matches() {
                 </tr>
                 </thead>
                 <tbody>
-                {matches.map((match, index) => (
+                {matches.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage).map((match, index) => (
                     <tr onClick={() => {
                         window.location.href = `/match/${match.id}`;
                     }} className={styles.row} key={match.id}>
@@ -49,6 +122,7 @@ export default function Matches() {
                 ))}
                 </tbody>
             </Table>
+            <Pagination className={styles.pagination}>{items}</Pagination>
         </Container>
     );
 }
