@@ -8,4 +8,5 @@ public class RankingDto
     public int Losses { get; set; }
     public double WinPercentage { get; set; }
     public double Elo { get; set; }
+    public double TAA { get; set; }
 }

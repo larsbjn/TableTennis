@@ -24,6 +24,12 @@ public class UserRepository(DatabaseContext databaseContext) : IUserRepository
         await databaseContext.SaveChangesAsync();
     }
 
+    public async Task Update(User user)
+    {
+        databaseContext.Users.Update(user);
+        await databaseContext.SaveChangesAsync();
+    }
+
     public async Task Delete(int id)
     {
         var user = await databaseContext.Users.FindAsync(id);

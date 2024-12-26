@@ -53,7 +53,8 @@ public class UserController(ILogger<UserController> logger, IUserRepository user
         await userRepository.Create(new User
         {
             Name = name,
-            Initials = initials
+            Initials = initials,
+            Elo = 1500
         });
         return Created();
     }

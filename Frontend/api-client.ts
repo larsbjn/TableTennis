@@ -585,6 +585,7 @@ export class RankingDto implements IRankingDto {
     losses?: number;
     winPercentage?: number;
     elo?: number;
+    taa?: number;
 
     constructor(data?: IRankingDto) {
         if (data) {
@@ -603,6 +604,7 @@ export class RankingDto implements IRankingDto {
             this.losses = _data["losses"];
             this.winPercentage = _data["winPercentage"];
             this.elo = _data["elo"];
+            this.taa = _data["taa"];
         }
     }
 
@@ -621,6 +623,7 @@ export class RankingDto implements IRankingDto {
         data["losses"] = this.losses;
         data["winPercentage"] = this.winPercentage;
         data["elo"] = this.elo;
+        data["taa"] = this.taa;
         return data;
     }
 }
@@ -632,12 +635,14 @@ export interface IRankingDto {
     losses?: number;
     winPercentage?: number;
     elo?: number;
+    taa?: number;
 }
 
 export class User implements IUser {
     id?: number;
     name?: string | undefined;
     initials?: string | undefined;
+    elo?: number;
 
     constructor(data?: IUser) {
         if (data) {
@@ -653,6 +658,7 @@ export class User implements IUser {
             this.id = _data["id"];
             this.name = _data["name"];
             this.initials = _data["initials"];
+            this.elo = _data["elo"];
         }
     }
 
@@ -668,6 +674,7 @@ export class User implements IUser {
         data["id"] = this.id;
         data["name"] = this.name;
         data["initials"] = this.initials;
+        data["elo"] = this.elo;
         return data;
     }
 }
@@ -676,6 +683,7 @@ export interface IUser {
     id?: number;
     name?: string | undefined;
     initials?: string | undefined;
+    elo?: number;
 }
 
 export class UserDto implements IUserDto {

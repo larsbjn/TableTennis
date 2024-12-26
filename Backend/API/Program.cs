@@ -1,4 +1,6 @@
 using API.Hubs;
+using API.Services;
+using Domain.Interfaces;
 using Domain.Interfaces.Repositories;
 using Infrastructure.DbContext;
 using Infrastructure.Repositories;
@@ -26,6 +28,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+builder.Services.AddScoped<IEloService, EloService>();
 
 builder.Services.AddSignalR();
 

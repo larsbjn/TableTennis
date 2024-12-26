@@ -1,5 +1,6 @@
 using API.Hubs;
 using API.Models.Dtos;
+using Domain.Extensions;
 using Domain.Interfaces.Hubs;
 using Domain.Interfaces.Repositories;
 using Domain.Models;
@@ -23,7 +24,8 @@ public class RankingController(
         var rankings = new Dictionary<string, RankingDto>();
 
         // Add all users
-        var users = await userRepository.GetAll();
+        var usersResponse = await userRepository.GetAll();
+        var users = usersResponse as User[] ?? usersResponse.ToArray();
         foreach (var user in users)
         {
             rankings[user.Name] = new RankingDto
@@ -31,12 +33,14 @@ public class RankingController(
                 Name = user.Name,
                 GamesPlayed = 0,
                 Wins = 0,
-                Losses = 0
+                Losses = 0,
+                Elo = Math.Round(user.Elo, 0)
             };
         }
 
         // Add all matches played, wins and losses
-        var matches = await matchRepository.GetAll();
+        var matchesResponse = await matchRepository.GetAll();
+        var matches = matchesResponse as Match[] ?? matchesResponse.ToArray();
         foreach (var match in matches.Where(m => m.Winner != null))
         {
             rankings[match.Player1.Name].GamesPlayed++;
@@ -53,12 +57,22 @@ public class RankingController(
             ranking.WinPercentage = Math.Round(winPercentage, 2);
         }
 
-        // Calculate Elo
-        foreach (var ranking in rankings.Values)
+        // Calculate TAA
+        var startOfWeek = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
+        var endOfWeek = startOfWeek.AddDays(7).AddTicks(-1);
+
+        var matchesThisWeek = matches.Where(m =>
+            m.Date >= startOfWeek && m.Date <= endOfWeek && m.Winner != null).ToArray();
+        foreach (var user in users)
         {
-            ranking.Elo = 1500 + 20 * (ranking.Wins - ranking.Losses);
+            var won = matchesThisWeek.Count(m => m.Winner!.Id == user.Id);
+            var played = matchesThisWeek.Count(m => m.Player1.Id == user.Id || m.Player2.Id == user.Id);
+            
+            var ratio = played == 0 ? 0 : (double)won / played * 100;
+
+            rankings[user.Name].TAA = Math.Round(ratio, 2);
         }
-        
+
         var response = rankings.Values.ToArray().OrderByDescending(r => r.Elo);
         return Ok(response);
     }

@@ -1,5 +1,6 @@
 using API.Hubs;
 using API.Models.Dtos;
+using Domain.Interfaces;
 using Domain.Interfaces.Hubs;
 using Domain.Interfaces.Repositories;
 using Domain.Models;
@@ -13,6 +14,7 @@ public class MatchController(
     ILogger<MatchController> logger,
     IMatchRepository matchRepository,
     IUserRepository userRepository,
+    IEloService eloService,
     IHubContext<RankingHub, IRankingHub> rankingHub)
     : ControllerBase
 {
@@ -61,6 +63,8 @@ public class MatchController(
             match.ExtraInfo2 = updateMatchDto.ExtraInfo2;
             
             var updatedMatch = await matchRepository.Update(match);
+            
+            await eloService.CalculateElo(match);
 
             await rankingHub.Clients.All.UpdatedRanking(420, "EDGE");
             return Ok(updatedMatch);
