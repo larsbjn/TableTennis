@@ -23,8 +23,8 @@ builder.Services.AddCors(options =>
 
 
 builder.Services.AddTransient<DatabaseContext, DatabaseContext>();
-builder.Services.AddTransient<IUserRepository, UserRepository>();
-builder.Services.AddTransient<IMatchRepository, MatchRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 
 var app = builder.Build();
 

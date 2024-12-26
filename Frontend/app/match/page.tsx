@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import {ActionMeta, SingleValue, Theme} from "react-select";
 import styles from './match.module.scss';
 import {matchClient, userClient} from "@/api-clients";
+import Spinner from "@/components/spinner/spinner";
 
 interface Option {
     value: string;
@@ -14,6 +15,7 @@ interface Option {
 const NoSSR = dynamic(() => import('react-select'), {ssr: false})
 export default function StartGame() {
 
+    const [isLoading, setIsLoading] = React.useState<boolean>(true);
     const [players, setPlayers] = React.useState<Array<Option>>([]);
     const [player1, setPlayer1] = React.useState<string>('');
     const [player2, setPlayer2] = React.useState<string>('');
@@ -24,6 +26,7 @@ export default function StartGame() {
                 value: player.id,
                 label: player.name
             })));
+            setIsLoading(false);
         });
     }, []);
 
@@ -45,6 +48,17 @@ export default function StartGame() {
         });
     }
 
+
+    if (isLoading) {
+        return <Container className={styles.container}>
+            <Row>
+                <Col className={styles.alignCenter}>
+                    <Spinner/>
+                </Col>
+            </Row>
+        </Container>
+    }
+    
     return (
         <Container className={styles.container}>
             <Row>

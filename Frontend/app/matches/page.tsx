@@ -5,8 +5,10 @@ import {MatchDto} from "@/api-client";
 import React, {useEffect} from "react";
 import {matchClient} from "@/api-clients";
 import styles from './matches.module.scss';
+import Spinner from "@/components/spinner/spinner";
 
 export default function Matches() {
+    const [isLoading, setIsLoading] = React.useState<boolean>(true);
     const [matches, setMatches] = React.useState<Array<MatchDto>>([]);
     const [page, setPage] = React.useState<number>(0);
     const itemsPerPage = 10;
@@ -84,8 +86,19 @@ export default function Matches() {
     useEffect(() => {
         matchClient.getAll().then((response) => {
             setMatches(response.reverse());
+            setIsLoading(false);
         });
     }, []);
+
+    if (isLoading) {
+        return <Container className={styles.container}>
+            <Row>
+                <Col className={styles.alignCenter}>
+                    <Spinner/>
+                </Col>
+            </Row>
+        </Container>
+    }
 
     return (
         <Container>

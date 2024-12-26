@@ -65,6 +65,164 @@ export class MatchClient {
     }
 
     /**
+     * @param id (optional) 
+     * @param player1_Id (optional) 
+     * @param player1_Name (optional) 
+     * @param player1_Initials (optional) 
+     * @param player2_Id (optional) 
+     * @param player2_Name (optional) 
+     * @param player2_Initials (optional) 
+     * @param winner_Id (optional) 
+     * @param winner_Name (optional) 
+     * @param winner_Initials (optional) 
+     * @param date (optional) 
+     * @param news (optional) 
+     * @param extraInfo1 (optional) 
+     * @param extraInfo2 (optional) 
+     * @return OK
+     */
+    update(id: number | undefined, player1_Id: number | undefined, player1_Name: string | undefined, player1_Initials: string | undefined, player2_Id: number | undefined, player2_Name: string | undefined, player2_Initials: string | undefined, winner_Id: number | undefined, winner_Name: string | undefined, winner_Initials: string | undefined, date: Date | undefined, news: string | undefined, extraInfo1: string | undefined, extraInfo2: string | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/Match/Update?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        if (player1_Id === null)
+            throw new Error("The parameter 'player1_Id' cannot be null.");
+        else if (player1_Id !== undefined)
+            url_ += "Player1.Id=" + encodeURIComponent("" + player1_Id) + "&";
+        if (player1_Name === null)
+            throw new Error("The parameter 'player1_Name' cannot be null.");
+        else if (player1_Name !== undefined)
+            url_ += "Player1.Name=" + encodeURIComponent("" + player1_Name) + "&";
+        if (player1_Initials === null)
+            throw new Error("The parameter 'player1_Initials' cannot be null.");
+        else if (player1_Initials !== undefined)
+            url_ += "Player1.Initials=" + encodeURIComponent("" + player1_Initials) + "&";
+        if (player2_Id === null)
+            throw new Error("The parameter 'player2_Id' cannot be null.");
+        else if (player2_Id !== undefined)
+            url_ += "Player2.Id=" + encodeURIComponent("" + player2_Id) + "&";
+        if (player2_Name === null)
+            throw new Error("The parameter 'player2_Name' cannot be null.");
+        else if (player2_Name !== undefined)
+            url_ += "Player2.Name=" + encodeURIComponent("" + player2_Name) + "&";
+        if (player2_Initials === null)
+            throw new Error("The parameter 'player2_Initials' cannot be null.");
+        else if (player2_Initials !== undefined)
+            url_ += "Player2.Initials=" + encodeURIComponent("" + player2_Initials) + "&";
+        if (winner_Id === null)
+            throw new Error("The parameter 'winner_Id' cannot be null.");
+        else if (winner_Id !== undefined)
+            url_ += "Winner.Id=" + encodeURIComponent("" + winner_Id) + "&";
+        if (winner_Name === null)
+            throw new Error("The parameter 'winner_Name' cannot be null.");
+        else if (winner_Name !== undefined)
+            url_ += "Winner.Name=" + encodeURIComponent("" + winner_Name) + "&";
+        if (winner_Initials === null)
+            throw new Error("The parameter 'winner_Initials' cannot be null.");
+        else if (winner_Initials !== undefined)
+            url_ += "Winner.Initials=" + encodeURIComponent("" + winner_Initials) + "&";
+        if (date === null)
+            throw new Error("The parameter 'date' cannot be null.");
+        else if (date !== undefined)
+            url_ += "Date=" + encodeURIComponent(date ? "" + date.toISOString() : "") + "&";
+        if (news === null)
+            throw new Error("The parameter 'news' cannot be null.");
+        else if (news !== undefined)
+            url_ += "News=" + encodeURIComponent("" + news) + "&";
+        if (extraInfo1 === null)
+            throw new Error("The parameter 'extraInfo1' cannot be null.");
+        else if (extraInfo1 !== undefined)
+            url_ += "ExtraInfo1=" + encodeURIComponent("" + extraInfo1) + "&";
+        if (extraInfo2 === null)
+            throw new Error("The parameter 'extraInfo2' cannot be null.");
+        else if (extraInfo2 !== undefined)
+            url_ += "ExtraInfo2=" + encodeURIComponent("" + extraInfo2) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "PATCH",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdate(_response);
+        });
+    }
+
+    protected processUpdate(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param matchId (optional) 
+     * @param winnerId (optional) 
+     * @return OK
+     */
+    updateWinner(matchId: number | undefined, winnerId: number | undefined): Promise<MatchDto> {
+        let url_ = this.baseUrl + "/Match/UpdateWinner?";
+        if (matchId === null)
+            throw new Error("The parameter 'matchId' cannot be null.");
+        else if (matchId !== undefined)
+            url_ += "matchId=" + encodeURIComponent("" + matchId) + "&";
+        if (winnerId === null)
+            throw new Error("The parameter 'winnerId' cannot be null.");
+        else if (winnerId !== undefined)
+            url_ += "winnerId=" + encodeURIComponent("" + winnerId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "PATCH",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateWinner(_response);
+        });
+    }
+
+    protected processUpdateWinner(response: Response): Promise<MatchDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MatchDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MatchDto>(null as any);
+    }
+
+    /**
      * @return OK
      */
     getAll(): Promise<MatchDto[]> {
@@ -390,6 +548,7 @@ export class UserClient {
 }
 
 export class MatchDto implements IMatchDto {
+    id?: number;
     player1!: UserDto;
     player2!: UserDto;
     winner?: UserDto;
@@ -397,7 +556,6 @@ export class MatchDto implements IMatchDto {
     news?: string | undefined;
     extraInfo1?: string | undefined;
     extraInfo2?: string | undefined;
-    id?: number;
 
     constructor(data?: IMatchDto) {
         if (data) {
@@ -414,6 +572,7 @@ export class MatchDto implements IMatchDto {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.player1 = _data["player1"] ? UserDto.fromJS(_data["player1"]) : new UserDto();
             this.player2 = _data["player2"] ? UserDto.fromJS(_data["player2"]) : new UserDto();
             this.winner = _data["winner"] ? UserDto.fromJS(_data["winner"]) : <any>undefined;
@@ -421,7 +580,6 @@ export class MatchDto implements IMatchDto {
             this.news = _data["news"];
             this.extraInfo1 = _data["extraInfo1"];
             this.extraInfo2 = _data["extraInfo2"];
-            this.id = _data["id"];
         }
     }
 
@@ -434,6 +592,7 @@ export class MatchDto implements IMatchDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["player1"] = this.player1 ? this.player1.toJSON() : <any>undefined;
         data["player2"] = this.player2 ? this.player2.toJSON() : <any>undefined;
         data["winner"] = this.winner ? this.winner.toJSON() : <any>undefined;
@@ -441,12 +600,12 @@ export class MatchDto implements IMatchDto {
         data["news"] = this.news;
         data["extraInfo1"] = this.extraInfo1;
         data["extraInfo2"] = this.extraInfo2;
-        data["id"] = this.id;
         return data;
     }
 }
 
 export interface IMatchDto {
+    id?: number;
     player1: UserDto;
     player2: UserDto;
     winner?: UserDto;
@@ -454,7 +613,6 @@ export interface IMatchDto {
     news?: string | undefined;
     extraInfo1?: string | undefined;
     extraInfo2?: string | undefined;
-    id?: number;
 }
 
 export class User implements IUser {

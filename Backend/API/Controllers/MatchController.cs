@@ -31,6 +31,59 @@ public class MatchController(
         return (MatchDto)match;
     }
 
+
+    /// <summary>
+    /// Updates an existing match.
+    /// </summary>
+    /// <param name="match">The match data to update.</param>
+    /// <returns>An OK response if the match is successfully updated; otherwise, a 400 Bad Request response.</returns>
+    [HttpPatch]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> Update(MatchDto match)
+    {
+        try
+        {
+            var entity = await matchRepository.Get(match.Id);
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            entity.News = match.News;
+            entity.ExtraInfo1 = match.ExtraInfo1;
+            entity.ExtraInfo2 = match.ExtraInfo2;
+            await matchRepository.Update(entity);
+            return Ok();
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest();
+        }
+    }
+
+    /// <summary>
+    /// Update the winner of a match
+    /// </summary>
+    /// <param name="matchId">The match id</param>
+    /// <param name="winnerId">The winning player id</param>
+    /// <returns></returns>
+    [HttpPatch]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<MatchDto>> UpdateWinner(int matchId, int winnerId)
+    {
+        try
+        {
+            var match = await matchRepository.UpdateWinner(matchId, winnerId);
+            return Ok((MatchDto)match);
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest();
+        }
+    }
+
     /// <summary>
     /// Retrieves all matches.
     /// </summary>

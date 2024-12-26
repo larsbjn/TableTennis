@@ -14,6 +14,15 @@ const nextConfig: NextConfig = {
                 }
             });
 
+        config.module.rules
+            .find(({oneOf}) => !!oneOf).oneOf
+            .filter(({use}) => JSON.stringify(use)?.includes('sass-loader'))
+            .reduce((acc, {use}) => acc.concat(use), [])
+            .forEach(({options}) => {
+                if (options.modules) {
+                    options.quietDeps = true;
+                }
+            });
         return config;
     },
 };
