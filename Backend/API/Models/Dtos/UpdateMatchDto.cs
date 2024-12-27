@@ -7,4 +7,5 @@ public class UpdateMatchDto
     public string? News { get; set; }
     public string? ExtraInfo1 { get; set; }
     public string? ExtraInfo2 { get; set; }
+    public bool UpdateWinner { get; set; }
 }

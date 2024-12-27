@@ -70,9 +70,10 @@ export class MatchClient {
      * @param news (optional) 
      * @param extraInfo1 (optional) 
      * @param extraInfo2 (optional) 
+     * @param updateWinner (optional) 
      * @return OK
      */
-    update(id: number | undefined, winnerId: number | undefined, news: string | undefined, extraInfo1: string | undefined, extraInfo2: string | undefined): Promise<MatchDto> {
+    update(id: number | undefined, winnerId: number | undefined, news: string | undefined, extraInfo1: string | undefined, extraInfo2: string | undefined, updateWinner: boolean | undefined): Promise<MatchDto> {
         let url_ = this.baseUrl + "/Match/Update?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
@@ -94,6 +95,10 @@ export class MatchClient {
             throw new Error("The parameter 'extraInfo2' cannot be null.");
         else if (extraInfo2 !== undefined)
             url_ += "ExtraInfo2=" + encodeURIComponent("" + extraInfo2) + "&";
+        if (updateWinner === null)
+            throw new Error("The parameter 'updateWinner' cannot be null.");
+        else if (updateWinner !== undefined)
+            url_ += "UpdateWinner=" + encodeURIComponent("" + updateWinner) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -262,6 +267,66 @@ export class MatchClient {
             });
         }
         return Promise.resolve<void>(null as any);
+    }
+}
+
+export class NewsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * @param count (optional) 
+     * @return OK
+     */
+    getLatest(count: number | undefined): Promise<NewsDto[]> {
+        let url_ = this.baseUrl + "/News/GetLatest?";
+        if (count === null)
+            throw new Error("The parameter 'count' cannot be null.");
+        else if (count !== undefined)
+            url_ += "count=" + encodeURIComponent("" + count) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetLatest(_response);
+        });
+    }
+
+    protected processGetLatest(response: Response): Promise<NewsDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(NewsDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NewsDto[]>(null as any);
     }
 }
 
@@ -576,6 +641,46 @@ export interface IMatchDto {
     news?: string | undefined;
     extraInfo1?: string | undefined;
     extraInfo2?: string | undefined;
+}
+
+export class NewsDto implements INewsDto {
+    news?: string | undefined;
+    date?: Date;
+
+    constructor(data?: INewsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.news = _data["news"];
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): NewsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new NewsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["news"] = this.news;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface INewsDto {
+    news?: string | undefined;
+    date?: Date;
 }
 
 export class RankingDto implements IRankingDto {

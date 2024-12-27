@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navigation from "@/components/navigation/navigation";
 import React from "react";
+import NewsTicker from "@/components/news-banner/news-ticker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body data-bs-theme={"dark"} className={`${geistSans.variable} ${geistMono.variable}`}>
         <Navigation />
         {children}
+        <NewsTicker />
       </body>
     </html>
   );

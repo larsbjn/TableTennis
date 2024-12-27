@@ -34,10 +34,10 @@ export default function Match({params}: { params: Promise<{ id: string }> }) {
     function updateWinner(userId?: number) {
         let m = {...match, winner: userId == match.player1.id ? match.player1 : match.player2} as MatchDto;
         setMatch(m);
-        save(m);
+        save(m, true);
     }
 
-    function save(entity: MatchDto = match) {
+    function save(entity: MatchDto = match, updateWinner: boolean = false) {
         const payload = {
             id: entity.id,
             winner: entity.winner,
@@ -45,7 +45,7 @@ export default function Match({params}: { params: Promise<{ id: string }> }) {
             extraInfo1: extraInfo1,
             extraInfo2: extraInfo2
         }
-        matchClient.update(payload.id, payload.winner?.id, payload.news, payload.extraInfo1, payload.extraInfo2).then(r => {
+        matchClient.update(payload.id, payload.winner?.id, payload.news, payload.extraInfo1, payload.extraInfo2, updateWinner).then(r => {
             setMatch(r);
         });
         setIsEditing(false);

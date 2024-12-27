@@ -18,7 +18,8 @@ public class MatchController(
     IUserRepository userRepository,
     RankingHandler rankingHandler,
     IEloService eloService,
-    IHubContext<RankingHub, IRankingHub> rankingHub)
+    IHubContext<RankingHub, IRankingHub> rankingHub,
+    IHubContext<NewsHub, INewsHub> newsHub)
     : ControllerBase
 {
     /// <summary>
@@ -66,14 +67,22 @@ public class MatchController(
             match.ExtraInfo2 = updateMatchDto.ExtraInfo2;
             
             var updatedMatch = await matchRepository.Update(match);
-            
-            await eloService.CalculateElo(match);
 
-            // Update rankings
-            var matches = await matchRepository.GetAll();
-            var users = await userRepository.GetAll();
-            var rankings = rankingHandler.GetRankings(matches.ToList(), users.ToList());
-            await rankingHub.Clients.All.UpdatedRanking(rankings);
+            if (updateMatchDto.UpdateWinner)
+            {
+                await eloService.CalculateElo(match);
+
+                // Update rankings
+                var matches = await matchRepository.GetAll();
+                var users = await userRepository.GetAll();
+                var rankings = rankingHandler.GetRankings(matches.ToList(), users.ToList());
+                await rankingHub.Clients.All.UpdatedRanking(rankings);
+            }
+            
+            // Update news
+            var latestMatches = await matchRepository.GetLatest(5);
+            var news = latestMatches.Select(m => new NewsDto{ News = m.News ?? "", Date = m.Date ?? DateTime.Now }).ToList();
+            await newsHub.Clients.All.UpdatedNews(news.ToList());
             return Ok(updatedMatch);
         }
         catch (ArgumentException e)

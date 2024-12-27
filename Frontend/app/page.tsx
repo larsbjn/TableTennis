@@ -3,8 +3,9 @@ import {Col, Container, Row, Table} from "react-bootstrap";
 import {observer} from "mobx-react";
 import {rankingStore} from "@/Stores/RankingStore";
 import Spinner from "@/components/spinner/spinner";
-import styles from "@/app/matches/matches.module.scss";
 import React from "react";
+import {newsStore} from "@/Stores/NewsStore";
+import styles from "@/app/dashboard.module.scss";
 
 const Dashboard = observer(() => {
 
@@ -26,12 +27,12 @@ const Dashboard = observer(() => {
                 return '🤗';
         }
     }
-    
+
     function getTrend(winPercentage?: number, taa?: number) {
         if (winPercentage == undefined || taa == undefined) {
             return '??';
         }
-        
+
         if (taa < winPercentage) {
             return '📉';
         } else if (taa > winPercentage) {
@@ -40,14 +41,21 @@ const Dashboard = observer(() => {
             return '😐';
         }
     }
+
+    const [rankingIsLoading, setRankingIsLoading] = React.useState(true);
+    const [newsIsLoading, setNewsIsLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        setRankingIsLoading(rankingStore.rankings.length === 0);
+        setNewsIsLoading(newsStore.news.length === 0);
+    }, [rankingStore.rankings.length, newsStore.news.length]);
     
     return (
         <Container>
             <Row>
-                <Col lg={8}>
-                    <h1>Ranking</h1>
-                    {rankingStore.rankings.length === 0 && <Spinner/>}
-                    {rankingStore.rankings.length > 0 && (
+                <Col className={styles.ranking} xl={7}>
+                    <h2>Ranking</h2>
+                    {rankingIsLoading ? <Spinner/> : (
                         <Table striped hover>
                             <thead>
                             <tr>
@@ -79,12 +87,23 @@ const Dashboard = observer(() => {
                             </tbody>
                         </Table>)}
                 </Col>
-                <Col lg={4}>
-                    <h1>Ritzau</h1>
+                <Col className={styles.ritzau} xl={{offset: 1, span: 4}}>
+                    <h2>🚨‼️ B R E A K I N G ‼️🚨</h2>
+                    {newsIsLoading ? <Spinner /> : (
+                        <>
+                            <div className={styles.news}>
+                                <p>
+                                    {newsStore.news[0].news}
+                                </p>
+                            </div>
+                            <p className={styles.date}>{newsStore.news[0].date?.toLocaleString('en-GB', { timeZone: 'UTC' })} - Ritzau</p>
+                        </>
+                    )}
                 </Col>
             </Row>
         </Container>
-    );
+    )
+        ;
 });
 
 export default Dashboard;

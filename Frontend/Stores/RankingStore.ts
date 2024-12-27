@@ -22,7 +22,6 @@ export class RankingStore {
     }
 
     fetchInitialRankings() {
-        console.log('Fetching initial rankings');
         rankingClient.getAll().then((response) => {
             this.updateRankings(response);
         });
