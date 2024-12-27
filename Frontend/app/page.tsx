@@ -44,12 +44,22 @@ const Dashboard = observer(() => {
 
     const [rankingIsLoading, setRankingIsLoading] = React.useState(true);
     const [newsIsLoading, setNewsIsLoading] = React.useState(true);
+    const [newNews, setNewNews] = React.useState(false);
 
     React.useEffect(() => {
         setRankingIsLoading(rankingStore.rankings.length === 0);
         setNewsIsLoading(newsStore.news.length === 0);
     }, [rankingStore.rankings.length, newsStore.news.length]);
-    
+
+    React.useEffect(() => {
+        setNewNews(true);
+        const timer = setTimeout(() => {
+            setNewNews(false);
+        }, 5000);
+
+        return () => clearTimeout(timer);
+    }, [newsStore.news]);
+
     return (
         <Container>
             <Row>
@@ -87,16 +97,17 @@ const Dashboard = observer(() => {
                             </tbody>
                         </Table>)}
                 </Col>
-                <Col className={styles.ritzau} xl={{offset: 1, span: 4}}>
+                <Col className={`${styles.ritzau} ${newNews && styles.newNews}`} xl={{offset: 1, span: 4}}>
                     <h2>🚨‼️ B R E A K I N G ‼️🚨</h2>
-                    {newsIsLoading ? <Spinner /> : (
+                    {newsIsLoading ? <Spinner/> : (
                         <>
-                            <div className={styles.news}>
+                            <div>
                                 <p>
                                     {newsStore.news[0].news}
                                 </p>
                             </div>
-                            <p className={styles.date}>{newsStore.news[0].date?.toLocaleString('en-GB', { timeZone: 'UTC' })} - Ritzau</p>
+                            <p className={styles.date}>{newsStore.news[0].date?.toLocaleString('en-GB', {timeZone: 'CET'})} -
+                                Ritzau</p>
                         </>
                     )}
                 </Col>

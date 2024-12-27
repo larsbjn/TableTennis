@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Navigation from "@/components/navigation/navigation";
 import React from "react";
 import NewsTicker from "@/components/news-banner/news-ticker";
+import "./global.scss";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

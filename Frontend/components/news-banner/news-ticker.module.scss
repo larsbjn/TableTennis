@@ -1,4 +1,4 @@
-$duration: 90s;
+
 
 @-webkit-keyframes ticker {
   0% {
@@ -50,8 +50,8 @@ $duration: 90s;
     animation-timing-function: linear;
     -webkit-animation-name: ticker;
     animation-name: ticker;
-    -webkit-animation-duration: $duration;
-    animation-duration: $duration;
+    -webkit-animation-duration: var(--timer);
+    animation-duration: var(--timer);
 
     &__item {
       display: inline-block;

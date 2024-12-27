@@ -28,7 +28,6 @@ export class NewsStore {
     }
 
     updateNews(news: Array<NewsDto>) {
-        console.log(news);
         this.news = news.map(item => {
             item.date = item.date ? new Date(item.date) : undefined;
             return item;

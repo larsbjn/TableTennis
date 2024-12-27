@@ -80,7 +80,7 @@ public class MatchController(
             }
             
             // Update news
-            var latestMatches = await matchRepository.GetLatest(5);
+            var latestMatches = await matchRepository.GetLatestWithNews(5);
             var news = latestMatches.Select(m => new NewsDto{ News = m.News ?? "", Date = m.Date ?? DateTime.Now }).ToList();
             await newsHub.Clients.All.UpdatedNews(news.ToList());
             return Ok(updatedMatch);

@@ -16,9 +16,10 @@ public class MatchRepository(DatabaseContext databaseContext) : IMatchRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Match>> GetLatest(int count)
+    public async Task<IEnumerable<Match>> GetLatestWithNews(int count)
     {
         return await databaseContext.Matches
+            .Where(m => !string.IsNullOrEmpty(m.News))
             .Include(m => m.Player1)
             .Include(m => m.Player2)
             .Include(m => m.Winner)

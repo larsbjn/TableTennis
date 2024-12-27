@@ -21,7 +21,7 @@ public class NewsController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<NewsDto>>> GetLatest(int count)
     {
-        var matches = await matchRepository.GetLatest(count);
+        var matches = await matchRepository.GetLatestWithNews(count);
         var news = (from match in matches where !string.IsNullOrEmpty(match.News) && match.Winner != null && match.Date != null select new NewsDto {News = match.News, Date = (DateTime)match.Date}).ToList();
         return Ok(news);
     }

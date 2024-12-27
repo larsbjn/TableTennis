@@ -135,7 +135,7 @@ export default function Matches() {
                 ))}
                 </tbody>
             </Table>
-            <Pagination className={styles.pagination}>{items}</Pagination>
+            {numberOfPages > 1 && <Pagination className={styles.pagination}>{items}</Pagination>}
         </Container>
     );
 }
