@@ -11,6 +11,7 @@ const Navigation: React.FC = () => {
                 <NavbarToggle aria-controls="basic-navbar-nav"/>
                 <NavbarCollapse id="basic-navbar-nav">
                     <Nav className="ms-auto">
+                        <Link className={"nav-link"} href={"/rules"}>Rules</Link>
                         <Link className={"nav-link"} href={"/matches"}>Matches</Link>
                         <Link className={"nav-link"} href={"/create-player"}>Create player</Link>
                         <Link className={"nav-link"} href={"/match"}>Start match</Link>

@@ -30,6 +30,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+builder.Services.AddScoped<IRuleRepository, RuleRepository>();
 builder.Services.AddScoped<IEloService, EloService>();
 builder.Services.AddScoped<RankingHandler>();
 
