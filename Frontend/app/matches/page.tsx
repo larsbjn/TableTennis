@@ -14,7 +14,7 @@ export default function Matches() {
     const itemsPerPage = 10;
     const numberOfPages = Math.ceil(matches.length / itemsPerPage);
 
-    let items = [];
+    const items = [];
     if (numberOfPages <= 5) {
         for (let number = 0; number < numberOfPages; number++) {
             items.push(
@@ -120,7 +120,7 @@ export default function Matches() {
                 </tr>
                 </thead>
                 <tbody>
-                {matches.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage).map((match, index) => (
+                {matches.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage).map((match) => (
                     <tr onClick={() => {
                         window.location.href = `/match/${match.id}`;
                     }} className={styles.row} key={match.id}>

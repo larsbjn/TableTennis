@@ -32,7 +32,7 @@ export default function Match({params}: { params: Promise<{ id: string }> }) {
     }, [params]);
 
     function updateWinner(userId?: number) {
-        let m = {...match, winner: userId == match.player1.id ? match.player1 : match.player2} as MatchDto;
+        const m = {...match, winner: userId == match.player1.id ? match.player1 : match.player2} as MatchDto;
         setMatch(m);
         save(m, true);
     }

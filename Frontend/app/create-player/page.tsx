@@ -1,7 +1,7 @@
 import {Button, Col, Container, Row} from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import styles from './create-player.module.scss';
-import React, {FormEvent} from "react";
+import React from "react";
 import {createPlayer} from "@/app/create-player/actions";
 
 const Page: React.FC = () => {

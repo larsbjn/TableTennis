@@ -2,10 +2,11 @@
 import {Button, Col, Container, Row} from "react-bootstrap";
 import React, {useEffect} from "react";
 import dynamic from "next/dynamic";
-import {ActionMeta, SingleValue, Theme} from "react-select";
+import {SingleValue, Theme} from "react-select";
 import styles from './match.module.scss';
 import {matchClient, userClient} from "@/api-clients";
 import Spinner from "@/components/spinner/spinner";
+import {UserDto} from "@/api-client";
 
 interface Option {
     value: string;
@@ -22,9 +23,9 @@ export default function StartGame() {
 
     useEffect(() => {
         userClient.getAll().then((response) => {
-            setPlayers(response.map((player: any) => ({
-                value: player.id,
-                label: player.name
+            setPlayers(response.map((player: UserDto) => ({
+                value: player.id?.toString() || '',
+                label: player.name || ''
             })));
             setIsLoading(false);
         });
@@ -71,7 +72,7 @@ export default function StartGame() {
                     <h3>Player 1</h3>
                     <NoSSR options={players}
                            theme={theme}
-                           onChange={(newValue: unknown, actionMeta: ActionMeta<unknown>) => {
+                           onChange={(newValue: unknown) => {
                                setPlayer1((newValue as SingleValue<Option>)?.value || '');
                            }}
                     />
@@ -83,7 +84,7 @@ export default function StartGame() {
                     <h3>Player 2</h3>
                     <NoSSR options={players}
                            theme={theme}
-                           onChange={(newValue: unknown, actionMeta: ActionMeta<unknown>) => {
+                           onChange={(newValue: unknown) => {
                                setPlayer2((newValue as SingleValue<Option>)?.value || '');
                            }}
                     />
