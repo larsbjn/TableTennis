@@ -36,6 +36,7 @@ public class UserController(ILogger<UserController> logger, IUserRepository user
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IEnumerable<UserDto>> GetAll()
     {
+        Console.WriteLine("Getting all users");
         return (await userRepository.GetAll()).Select(user => (UserDto)user);
     }
 
