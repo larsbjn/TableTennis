@@ -19,9 +19,6 @@ const Page: React.FC = () => {
                         <Form.Label>Name</Form.Label>
                         <Form.Control name={"name"} size="lg" type="text" placeholder="John Doe"/>
                         <br/>
-                        <Form.Label>Initials</Form.Label>
-                        <Form.Control name={"initials"} size="lg" type="text" placeholder="JD"/>
-                        <br/>
                         <Button variant="primary" type="submit">
                             Create
                         </Button>

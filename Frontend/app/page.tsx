@@ -33,7 +33,9 @@ const Dashboard = observer(() => {
             return '??';
         }
 
-        if (taa < winPercentage) {
+        if (taa == 0) {
+            return '🤷';
+        } else if (taa < winPercentage) {
             return '📉';
         } else if (taa > winPercentage) {
             return '📈';

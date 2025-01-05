@@ -20,7 +20,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", b =>
     {
-        b.WithOrigins("http://localhost:3000")
+        b
+            .SetIsOriginAllowed(origin => true)
+            // .WithOrigins("http://localhost:3000", "https://thankful-field-0ccf17503.4.azurestaticapps.net/",
+            //     "http://thankful-field-0ccf17503.4.azurestaticapps.net/")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
