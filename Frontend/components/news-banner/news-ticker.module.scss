@@ -58,6 +58,17 @@
       padding: 0 2rem;
       font-size: 2rem;
       color: rgb(33, 37, 41);
+      position: relative;
+
+      &:after {
+        content: '';
+        width: 2px;
+        height: 2rem;
+        background: rgb(33, 37, 41);
+        position: absolute;
+        right: 0;
+        top: 1rem;
+      }
     }
   }
 }
