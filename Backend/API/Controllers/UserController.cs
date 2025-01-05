@@ -36,7 +36,6 @@ public class UserController(ILogger<UserController> logger, IUserRepository user
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IEnumerable<UserDto>> GetAll()
     {
-        Console.WriteLine("Getting all users");
         return (await userRepository.GetAll()).Select(user => (UserDto)user);
     }
 
@@ -49,12 +48,13 @@ public class UserController(ILogger<UserController> logger, IUserRepository user
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> Create(string name, string initials)
+    public async Task<ActionResult> Create(string name, string? initials)
     {
+        var init = initials ?? name[..2].ToUpper();
         await userRepository.Create(new User
         {
             Name = name,
-            Initials = initials,
+            Initials = init,
             Elo = 1500
         });
         return Created();
