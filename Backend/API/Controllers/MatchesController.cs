@@ -77,7 +77,7 @@ public class MatchesController(
 
             if (updateMatchDto.UpdateWinner)
             {
-                await eloService.CalculateElo(match);
+                await eloService.AdjustEloForMatch(match);
 
                 // Update rankings
                 var matches = await matchRepository.GetAll();
