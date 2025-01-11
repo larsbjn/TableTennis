@@ -18,7 +18,7 @@
     "react-bootstrap": "^2.10.7",
     "react-dom": "^19.0.0",
     "react-select": "^5.9.0",
-    "sass": "^1.83.0"
+    "sass": "1.77.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -19,12 +19,12 @@ const nextConfig: NextConfig = {
             .filter(({use}) => JSON.stringify(use)?.includes('sass-loader'))
             .reduce((acc, {use}) => acc.concat(use), [])
             .forEach(({options}) => {
-                if (options.modules) {
-                    options.quietDeps = true;
+                if (options.sassOptions) {
+                    options.sassOptions.quietDeps = true;
                 }
             });
         return config;
-    },
+    }
 };
 
 export default nextConfig;
