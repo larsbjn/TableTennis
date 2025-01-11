@@ -5,8 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Route("[controller]/[action]")]
-public class UserController(ILogger<UserController> logger, IUserRepository userRepository)
+/// <summary>
+/// Controller for users
+/// </summary>
+/// <param name="userRepository"></param>
+[Route("[controller]/")]
+public class UsersController(IUserRepository userRepository)
     : ControllerBase
 {
     /// <summary>
@@ -14,7 +18,7 @@ public class UserController(ILogger<UserController> logger, IUserRepository user
     /// </summary>
     /// <param name="id">The ID of the user to retrieve.</param>
     /// <returns>A user object if found; otherwise, a 404 Not Found response.</returns>
-    [HttpGet]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<UserDto>> Get(int id)

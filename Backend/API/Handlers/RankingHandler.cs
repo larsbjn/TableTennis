@@ -4,9 +4,18 @@ using Domain.Models;
 
 namespace API.Handlers;
 
-public class RankingHandler
+/// <summary>
+/// Handler for managing rankings.
+/// </summary>
+public static class RankingHandler
 {
-    public List<RankingDto> GetRankings(List<Match> matches, List<User> users)
+    /// <summary>
+    /// Gets the rankings based on the provided matches and users.
+    /// </summary>
+    /// <param name="matches">The list of matches.</param>
+    /// <param name="users">The list of users.</param>
+    /// <returns>A list of ranking data transfer objects.</returns>
+    public static List<RankingDto> GetRankings(List<Match> matches, List<User> users)
     {
         
         var rankings = new Dictionary<string, RankingDto>();

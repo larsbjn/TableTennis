@@ -11,12 +11,18 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace API.Controllers;
 
-[Route("[controller]/[action]")]
-public class MatchController(
-    ILogger<MatchController> logger,
+/// <summary>
+/// Controller for matches
+/// </summary>
+/// <param name="matchRepository"></param>
+/// <param name="userRepository"></param>
+/// <param name="eloService"></param>
+/// <param name="rankingHub"></param>
+/// <param name="newsHub"></param>
+[Route("[controller]/")]
+public class MatchesController(
     IMatchRepository matchRepository,
     IUserRepository userRepository,
-    RankingHandler rankingHandler,
     IEloService eloService,
     IHubContext<RankingHub, IRankingHub> rankingHub,
     IHubContext<NewsHub, INewsHub> newsHub)
@@ -27,7 +33,7 @@ public class MatchController(
     /// </summary>
     /// <param name="id">The ID of the match to retrieve.</param>
     /// <returns>A match object if found; otherwise, a 404 Not Found response.</returns>
-    [HttpGet]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<MatchDto>> Get(int id)
@@ -47,7 +53,7 @@ public class MatchController(
     /// </summary>
     /// <param name="updateMatchDto">The updated info for the match</param>
     /// <returns>An updated match object if successful; otherwise, a 400 Bad Request response.</returns>
-    [HttpPost]
+    [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<MatchDto>> Update(UpdateMatchDto updateMatchDto)
@@ -57,15 +63,15 @@ public class MatchController(
             var winner = await userRepository.Get(updateMatchDto.WinnerId ?? 0);
 
             if (winner == null) return BadRequest();
-            
+
             var match = await matchRepository.Get(updateMatchDto.Id);
             if (match == null) return BadRequest();
-            
+
             match.Winner = winner;
             match.News = updateMatchDto.News;
             match.ExtraInfo1 = updateMatchDto.ExtraInfo1;
             match.ExtraInfo2 = updateMatchDto.ExtraInfo2;
-            
+
             var updatedMatch = await matchRepository.Update(match);
 
             if (updateMatchDto.UpdateWinner)
@@ -75,17 +81,18 @@ public class MatchController(
                 // Update rankings
                 var matches = await matchRepository.GetAll();
                 var users = await userRepository.GetAll();
-                var rankings = rankingHandler.GetRankings(matches.ToList(), users.ToList());
+                var rankings = RankingHandler.GetRankings(matches.ToList(), users.ToList());
                 await rankingHub.Clients.All.UpdatedRanking(rankings);
             }
-            
+
             // Update news
             var latestMatches = await matchRepository.GetLatestWithNews(5);
-            var news = latestMatches.Select(m => new NewsDto{ News = m.News ?? "", Date = m.Date ?? DateTime.Now }).ToList();
+            var news = latestMatches.Select(m => new NewsDto { News = m.News ?? "", Date = m.Date ?? DateTime.Now })
+                .ToList();
             await newsHub.Clients.All.UpdatedNews(news.ToList());
             return Ok(updatedMatch);
         }
-        catch (ArgumentException e)
+        catch (ArgumentException)
         {
             return BadRequest();
         }
@@ -118,7 +125,7 @@ public class MatchController(
             var match = await matchRepository.Create(player1Id, player2Id);
             return Created($"/match/{match}", match);
         }
-        catch (ArgumentException e)
+        catch (ArgumentException)
         {
             return BadRequest();
         }

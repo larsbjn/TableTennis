@@ -1,3 +1,4 @@
+using System.Reflection;
 using API.Handlers;
 using API.Hubs;
 using API.Services;
@@ -14,7 +15,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(swag =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    swag.IncludeXmlComments(xmlPath);
+});
 
 builder.Services.AddCors(options =>
 {
@@ -35,7 +41,6 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 builder.Services.AddScoped<IRuleRepository, RuleRepository>();
 builder.Services.AddScoped<IEloService, EloService>();
-builder.Services.AddScoped<RankingHandler>();
 
 builder.Services.AddSignalR();
 

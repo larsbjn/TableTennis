@@ -5,8 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Route("[controller]/[action]")]
-public class RuleController(ILogger<RuleController> logger, IRuleRepository ruleRepository)
+/// <summary>
+/// Controller for rules
+/// </summary>
+/// <param name="ruleRepository"></param>
+[Route("[controller]/")]
+public class RulesController(IRuleRepository ruleRepository)
     : ControllerBase
 {
     /// <summary>
@@ -14,7 +18,7 @@ public class RuleController(ILogger<RuleController> logger, IRuleRepository rule
     /// </summary>
     /// <param name="id">The ID of the rule to retrieve.</param>
     /// <returns>A rule object if found; otherwise, a 404 Not Found response.</returns>
-    [HttpGet]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<RuleDto>> Get(int id)
