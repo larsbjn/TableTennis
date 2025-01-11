@@ -30,7 +30,9 @@ export default function RootLayout({
     <html lang="en">
       <body data-bs-theme={"dark"} className={`${geistSans.variable} ${geistMono.variable}`}>
         <Navigation />
+        <div className={"content-container"}>
         {children}
+        </div>
         <NewsTicker />
       </body>
     </html>
