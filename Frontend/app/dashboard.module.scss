@@ -2,47 +2,59 @@
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/mixins";
 
-.ranking {
-  overflow: scroll;
-}
-
-.ritzau {
-  margin-top: 10vh;
-  box-shadow: 0 0 30px 5px #f5bb00;
-  border-radius: 10px;
-  padding: 40px;
+.container {
+  padding: 30px 5vw;
+  height: 100%;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 40px;
-  transition: box-shadow 0.5s;
-  
-  &.new-news {
-    animation: pulse 1s infinite;
+  flex-direction: row;
+  align-items: center;
+
+  .ranking {
+    overflow: scroll;
   }
 
-  @keyframes pulse {
-    0%, 100% {
-      box-shadow: 0 0 30px 5px #f5bb00;
+  .ritzau {
+    box-shadow: 0 0 30px 5px #f5bb00;
+    border-radius: 10px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 40px;
+    transition: box-shadow 0.5s;
+    
+    .news-text {
+      font-size: 1.4rem;
+      line-height: 2.3rem;
     }
-    50% {
-      box-shadow: 0 0 60px 5px #f5bb00;
+
+    &.new-news {
+      animation: pulse 1s infinite;
     }
-  }
-  @include media-breakpoint-up(xl) {
-    margin-top: 0;
-  }
 
-  h2 {
-    text-align: center;
-  }
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: 0 0 30px 5px #f5bb00;
+      }
+      50% {
+        box-shadow: 0 0 60px 5px #f5bb00;
+      }
+    }
+    @include media-breakpoint-up(xl) {
+      margin-top: 0;
+    }
 
-  > * {
-    margin: 0;
-  }
+    h2 {
+      text-align: center;
+    }
 
-  .date {
-    text-align: right;
-    color: #a3a3a3;
+    > * {
+      margin: 0;
+    }
+
+    .date {
+      text-align: right;
+      color: #a3a3a3;
+    }
   }
 }

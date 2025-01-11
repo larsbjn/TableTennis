@@ -18,7 +18,7 @@ const NewsTicker = observer(() => {
                 words += newsItem.news.split(" ").length;
             }
         });
-        let timer = words / 200 * 60;
+        let timer = words / 120 * 60;
         if (timer < 15) {
             timer = 15;
         }

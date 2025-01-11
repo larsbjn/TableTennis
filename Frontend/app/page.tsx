@@ -63,7 +63,7 @@ const Dashboard = observer(() => {
     }, [newsStore.news]);
 
     return (
-        <Container>
+        <Container className={styles.container} fluid>
             <Row>
                 <Col className={styles.ranking} xl={7}>
                     <h2>Ranking</h2>
@@ -104,7 +104,7 @@ const Dashboard = observer(() => {
                     {newsIsLoading ? <Spinner/> : (
                         <>
                             <div>
-                                <p>
+                                <p className={styles.newsText}>
                                     {newsStore.news[0].news}
                                 </p>
                             </div>
