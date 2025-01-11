@@ -20,7 +20,7 @@ public class RankingsController(
     /// Retrieves all rankings.
     /// </summary>
     /// <returns></returns>
-    [HttpGet]
+    [HttpGet(Name = "GetAllRankings")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<RankingDto[]>> GetAll()
     {

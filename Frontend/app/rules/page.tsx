@@ -10,7 +10,7 @@ export default function Rules() {
     const [rules, setRules] = useState<RuleDto[]>([]);
 
     useEffect(() => {
-        ruleClient.getAll().then((rules) => {
+        ruleClient.getAllRules().then((rules) => {
             setRules(rules);
         });
     }, []);

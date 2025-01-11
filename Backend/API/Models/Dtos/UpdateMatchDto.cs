@@ -6,11 +6,6 @@ namespace API.Models.Dtos;
 public class UpdateMatchDto
 {
     /// <summary>
-    /// Gets or sets the ID of the match.
-    /// </summary>
-    public int Id { get; set; }
-
-    /// <summary>
     /// Gets or sets the ID of the winner.
     /// </summary>
     public int? WinnerId { get; set; }

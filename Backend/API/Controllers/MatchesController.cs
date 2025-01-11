@@ -33,7 +33,7 @@ public class MatchesController(
     /// </summary>
     /// <param name="id">The ID of the match to retrieve.</param>
     /// <returns>A match object if found; otherwise, a 404 Not Found response.</returns>
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "GetMatch")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<MatchDto>> Get(int id)
@@ -51,12 +51,13 @@ public class MatchesController(
     /// <summary>
     /// Updates a match with the provided details.
     /// </summary>
+    /// <param name="matchId">The id of the match to update</param>
     /// <param name="updateMatchDto">The updated info for the match</param>
     /// <returns>An updated match object if successful; otherwise, a 400 Bad Request response.</returns>
-    [HttpPut]
+    [HttpPut("{matchId:int}", Name = "UpdateMatch")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<MatchDto>> Update(UpdateMatchDto updateMatchDto)
+    public async Task<ActionResult<MatchDto>> Update(int matchId, UpdateMatchDto updateMatchDto)
     {
         try
         {
@@ -64,7 +65,7 @@ public class MatchesController(
 
             if (winner == null) return BadRequest();
 
-            var match = await matchRepository.Get(updateMatchDto.Id);
+            var match = await matchRepository.Get(matchId);
             if (match == null) return BadRequest();
 
             match.Winner = winner;
@@ -102,7 +103,7 @@ public class MatchesController(
     /// Retrieves all matches.
     /// </summary>
     /// <returns>A list of all matches.</returns>
-    [HttpGet]
+    [HttpGet(Name = "GetAllMatches")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IEnumerable<MatchDto>> GetAll()
     {
@@ -115,7 +116,7 @@ public class MatchesController(
     /// <param name="player1Id">Player 1 id</param>
     /// <param name="player2Id">Player 2 id</param>
     /// <returns>A 201 Created response if the match is successfully added; otherwise, a 400 Bad Request response.</returns>
-    [HttpPost]
+    [HttpPost(Name = "CreateMatch")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<int>> Create(int player1Id, int player2Id)
@@ -136,7 +137,7 @@ public class MatchesController(
     /// </summary>
     /// <param name="id">The ID of the match to delete.</param>
     /// <returns>A 200 OK response if the match is successfully deleted.</returns>
-    [HttpDelete]
+    [HttpDelete(Name = "DeleteMatch")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> Delete(int id)
     {

@@ -22,7 +22,7 @@ export class RankingStore {
     }
 
     fetchInitialRankings() {
-        rankingClient.getAll().then((response) => {
+        rankingClient.getAllRankings().then((response) => {
             this.updateRankings(response);
         });
     }

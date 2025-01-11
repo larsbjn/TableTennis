@@ -1,4 +1,5 @@
-﻿using NSwag;
+﻿using GenerateTypeScriptAPIClient;
+using NSwag;
 using NSwag.CodeGeneration.OperationNameGenerators;
 using NSwag.CodeGeneration.TypeScript;
 
@@ -8,7 +9,7 @@ var settings = new TypeScriptClientGeneratorSettings
 {
     ClassName = "{controller}Client",
     Template = TypeScriptTemplate.Fetch,
-    OperationNameGenerator = new MultipleClientsFromFirstTagAndPathSegmentsOperationNameGenerator()
+    OperationNameGenerator = new MultipleClientsFromMethodName()
 };
 
 var generator = new TypeScriptClientGenerator(document, settings);

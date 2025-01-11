@@ -22,7 +22,7 @@ export class NewsStore {
     }
 
     fetchInitialNews() {
-        newsClient.getLatest(5).then((response) => {
+        newsClient.getLatestNews(5).then((response) => {
             this.updateNews(response);
         });
     }

@@ -22,7 +22,7 @@ public class NewsController(
     /// </summary>
     /// <param name="count">Number of latest news</param>
     /// <returns>Latest news</returns>
-    [HttpGet("latest/{count:int}")]
+    [HttpGet("latest/{count:int}", Name = "GetLatestNews")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<NewsDto>>> Latest(int count)
     {

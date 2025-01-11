@@ -84,7 +84,7 @@ export default function Matches() {
     }
 
     useEffect(() => {
-        matchClient.getAll().then((response) => {
+        matchClient.getAllMatches().then((response) => {
             setMatches(response.reverse());
             setIsLoading(false);
         });

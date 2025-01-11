@@ -8,7 +8,7 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-export class MatchClient {
+export class MatchesClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -19,15 +19,15 @@ export class MatchClient {
     }
 
     /**
-     * @param id (optional) 
+     * Retrieves a match by its ID.
+     * @param id The ID of the match to retrieve.
      * @return OK
      */
-    get(id: number | undefined): Promise<MatchDto> {
-        let url_ = this.baseUrl + "/Match/Get?";
-        if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
-        else if (id !== undefined)
-            url_ += "id=" + encodeURIComponent("" + id) + "&";
+    getMatch(id: number): Promise<MatchDto> {
+        let url_ = this.baseUrl + "/Matches/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -38,11 +38,11 @@ export class MatchClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGet(_response);
+            return this.processGetMatch(_response);
         });
     }
 
-    protected processGet(response: Response): Promise<MatchDto> {
+    protected processGetMatch(response: Response): Promise<MatchDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -65,20 +65,20 @@ export class MatchClient {
     }
 
     /**
-     * @param id (optional) 
-     * @param winnerId (optional) 
-     * @param news (optional) 
-     * @param extraInfo1 (optional) 
-     * @param extraInfo2 (optional) 
-     * @param updateWinner (optional) 
+     * Updates a match with the provided details.
+     * @param matchId The id of the match to update
+     * @param winnerId (optional) Gets or sets the ID of the winner.
+     * @param news (optional) Gets or sets the news related to the match.
+     * @param extraInfo1 (optional) Gets or sets the extra information 1 of the match.
+     * @param extraInfo2 (optional) Gets or sets the extra information 2 of the match.
+     * @param updateWinner (optional) Gets or sets a value indicating whether to update the winner.
      * @return OK
      */
-    update(id: number | undefined, winnerId: number | undefined, news: string | undefined, extraInfo1: string | undefined, extraInfo2: string | undefined, updateWinner: boolean | undefined): Promise<MatchDto> {
-        let url_ = this.baseUrl + "/Match/Update?";
-        if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
-        else if (id !== undefined)
-            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+    updateMatch(matchId: number, winnerId: number | undefined, news: string | undefined, extraInfo1: string | undefined, extraInfo2: string | undefined, updateWinner: boolean | undefined): Promise<MatchDto> {
+        let url_ = this.baseUrl + "/Matches/{matchId}?";
+        if (matchId === undefined || matchId === null)
+            throw new Error("The parameter 'matchId' must be defined.");
+        url_ = url_.replace("{matchId}", encodeURIComponent("" + matchId));
         if (winnerId === null)
             throw new Error("The parameter 'winnerId' cannot be null.");
         else if (winnerId !== undefined)
@@ -102,18 +102,18 @@ export class MatchClient {
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
-            method: "POST",
+            method: "PUT",
             headers: {
                 "Accept": "text/plain"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdate(_response);
+            return this.processUpdateMatch(_response);
         });
     }
 
-    protected processUpdate(response: Response): Promise<MatchDto> {
+    protected processUpdateMatch(response: Response): Promise<MatchDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -136,10 +136,11 @@ export class MatchClient {
     }
 
     /**
+     * Retrieves all matches.
      * @return OK
      */
-    getAll(): Promise<MatchDto[]> {
-        let url_ = this.baseUrl + "/Match/GetAll";
+    getAllMatches(): Promise<MatchDto[]> {
+        let url_ = this.baseUrl + "/Matches";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -150,11 +151,11 @@ export class MatchClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetAll(_response);
+            return this.processGetAllMatches(_response);
         });
     }
 
-    protected processGetAll(response: Response): Promise<MatchDto[]> {
+    protected processGetAllMatches(response: Response): Promise<MatchDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -180,12 +181,13 @@ export class MatchClient {
     }
 
     /**
-     * @param player1Id (optional) 
-     * @param player2Id (optional) 
+     * Adds a new match.
+     * @param player1Id (optional) Player 1 id
+     * @param player2Id (optional) Player 2 id
      * @return Created
      */
-    create(player1Id: number | undefined, player2Id: number | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/Match/Create?";
+    createMatch(player1Id: number | undefined, player2Id: number | undefined): Promise<number> {
+        let url_ = this.baseUrl + "/Matches?";
         if (player1Id === null)
             throw new Error("The parameter 'player1Id' cannot be null.");
         else if (player1Id !== undefined)
@@ -204,11 +206,11 @@ export class MatchClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate(_response);
+            return this.processCreateMatch(_response);
         });
     }
 
-    protected processCreate(response: Response): Promise<number> {
+    protected processCreateMatch(response: Response): Promise<number> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -232,11 +234,12 @@ export class MatchClient {
     }
 
     /**
-     * @param id (optional) 
+     * Deletes a match by its ID.
+     * @param id (optional) The ID of the match to delete.
      * @return OK
      */
-    delete(id: number | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/Match/Delete?";
+    deleteMatch(id: number | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/Matches?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
         else if (id !== undefined)
@@ -250,11 +253,11 @@ export class MatchClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDelete(_response);
+            return this.processDeleteMatch(_response);
         });
     }
 
-    protected processDelete(response: Response): Promise<void> {
+    protected processDeleteMatch(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -281,15 +284,15 @@ export class NewsClient {
     }
 
     /**
-     * @param count (optional) 
+     * Retrieves the latest news.
+     * @param count Number of latest news
      * @return OK
      */
-    getLatest(count: number | undefined): Promise<NewsDto[]> {
-        let url_ = this.baseUrl + "/News/GetLatest?";
-        if (count === null)
-            throw new Error("The parameter 'count' cannot be null.");
-        else if (count !== undefined)
-            url_ += "count=" + encodeURIComponent("" + count) + "&";
+    getLatestNews(count: number): Promise<NewsDto[]> {
+        let url_ = this.baseUrl + "/News/latest/{count}";
+        if (count === undefined || count === null)
+            throw new Error("The parameter 'count' must be defined.");
+        url_ = url_.replace("{count}", encodeURIComponent("" + count));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -300,11 +303,11 @@ export class NewsClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetLatest(_response);
+            return this.processGetLatestNews(_response);
         });
     }
 
-    protected processGetLatest(response: Response): Promise<NewsDto[]> {
+    protected processGetLatestNews(response: Response): Promise<NewsDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -330,7 +333,7 @@ export class NewsClient {
     }
 }
 
-export class RankingClient {
+export class RankingsClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -341,10 +344,11 @@ export class RankingClient {
     }
 
     /**
+     * Retrieves all rankings.
      * @return OK
      */
-    getAll(): Promise<RankingDto[]> {
-        let url_ = this.baseUrl + "/Ranking/GetAll";
+    getAllRankings(): Promise<RankingDto[]> {
+        let url_ = this.baseUrl + "/Rankings";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -355,11 +359,11 @@ export class RankingClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetAll(_response);
+            return this.processGetAllRankings(_response);
         });
     }
 
-    protected processGetAll(response: Response): Promise<RankingDto[]> {
+    protected processGetAllRankings(response: Response): Promise<RankingDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -385,7 +389,7 @@ export class RankingClient {
     }
 }
 
-export class RuleClient {
+export class RulesClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -396,15 +400,15 @@ export class RuleClient {
     }
 
     /**
-     * @param id (optional) 
+     * Retrieves a rule by its ID.
+     * @param id The ID of the rule to retrieve.
      * @return OK
      */
-    get(id: number | undefined): Promise<RuleDto> {
-        let url_ = this.baseUrl + "/Rule/Get?";
-        if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
-        else if (id !== undefined)
-            url_ += "id=" + encodeURIComponent("" + id) + "&";
+    getRule(id: number): Promise<RuleDto> {
+        let url_ = this.baseUrl + "/Rules/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -415,11 +419,11 @@ export class RuleClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGet(_response);
+            return this.processGetRule(_response);
         });
     }
 
-    protected processGet(response: Response): Promise<RuleDto> {
+    protected processGetRule(response: Response): Promise<RuleDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -442,10 +446,11 @@ export class RuleClient {
     }
 
     /**
+     * Retrieves all rules.
      * @return OK
      */
-    getAll(): Promise<RuleDto[]> {
-        let url_ = this.baseUrl + "/Rule/GetAll";
+    getAllRules(): Promise<RuleDto[]> {
+        let url_ = this.baseUrl + "/Rules";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -456,11 +461,11 @@ export class RuleClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetAll(_response);
+            return this.processGetAllRules(_response);
         });
     }
 
-    protected processGetAll(response: Response): Promise<RuleDto[]> {
+    protected processGetAllRules(response: Response): Promise<RuleDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -486,24 +491,25 @@ export class RuleClient {
     }
 
     /**
-     * @param id (optional) 
-     * @param english (optional) 
-     * @param danish (optional) 
+     * Adds a new rule.
+     * @param id (optional) Gets or sets the ID of the rule.
+     * @param english Gets or sets the English text of the rule.
+     * @param danish Gets or sets the Danish text of the rule.
      * @return Created
      */
-    create(id: number | undefined, english: string | undefined, danish: string | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/Rule/Create?";
+    createRule(id: number | undefined, english: string, danish: string): Promise<void> {
+        let url_ = this.baseUrl + "/Rules?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
         else if (id !== undefined)
             url_ += "Id=" + encodeURIComponent("" + id) + "&";
-        if (english === null)
-            throw new Error("The parameter 'english' cannot be null.");
-        else if (english !== undefined)
+        if (english === undefined || english === null)
+            throw new Error("The parameter 'english' must be defined and cannot be null.");
+        else
             url_ += "English=" + encodeURIComponent("" + english) + "&";
-        if (danish === null)
-            throw new Error("The parameter 'danish' cannot be null.");
-        else if (danish !== undefined)
+        if (danish === undefined || danish === null)
+            throw new Error("The parameter 'danish' must be defined and cannot be null.");
+        else
             url_ += "Danish=" + encodeURIComponent("" + danish) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -514,11 +520,11 @@ export class RuleClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate(_response);
+            return this.processCreateRule(_response);
         });
     }
 
-    protected processCreate(response: Response): Promise<void> {
+    protected processCreateRule(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -538,11 +544,12 @@ export class RuleClient {
     }
 
     /**
-     * @param id (optional) 
+     * Deletes a rule by its ID.
+     * @param id (optional) The ID of the rule to delete.
      * @return OK
      */
-    delete(id: number | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/Rule/Delete?";
+    deleteRule(id: number | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/Rules?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
         else if (id !== undefined)
@@ -556,11 +563,11 @@ export class RuleClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDelete(_response);
+            return this.processDeleteRule(_response);
         });
     }
 
-    protected processDelete(response: Response): Promise<void> {
+    protected processDeleteRule(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -576,7 +583,7 @@ export class RuleClient {
     }
 }
 
-export class UserClient {
+export class UsersClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -587,15 +594,15 @@ export class UserClient {
     }
 
     /**
-     * @param id (optional) 
+     * Retrieves a user by their ID.
+     * @param id The ID of the user to retrieve.
      * @return OK
      */
-    get(id: number | undefined): Promise<UserDto> {
-        let url_ = this.baseUrl + "/User/Get?";
-        if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
-        else if (id !== undefined)
-            url_ += "id=" + encodeURIComponent("" + id) + "&";
+    getUser(id: number): Promise<UserDto> {
+        let url_ = this.baseUrl + "/Users/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -606,11 +613,11 @@ export class UserClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGet(_response);
+            return this.processGetUser(_response);
         });
     }
 
-    protected processGet(response: Response): Promise<UserDto> {
+    protected processGetUser(response: Response): Promise<UserDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -633,10 +640,11 @@ export class UserClient {
     }
 
     /**
+     * Retrieves all users.
      * @return OK
      */
-    getAll(): Promise<UserDto[]> {
-        let url_ = this.baseUrl + "/User/GetAll";
+    getAllUsers(): Promise<UserDto[]> {
+        let url_ = this.baseUrl + "/Users";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -647,11 +655,11 @@ export class UserClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetAll(_response);
+            return this.processGetAllUsers(_response);
         });
     }
 
-    protected processGetAll(response: Response): Promise<UserDto[]> {
+    protected processGetAllUsers(response: Response): Promise<UserDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -677,12 +685,13 @@ export class UserClient {
     }
 
     /**
-     * @param name (optional) 
-     * @param initials (optional) 
+     * Adds a new user.
+     * @param name (optional) The name of the player
+     * @param initials (optional) The initials of the player
      * @return Created
      */
-    create(name: string | undefined, initials: string | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/User/Create?";
+    createUser(name: string | undefined, initials: string | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/Users?";
         if (name === null)
             throw new Error("The parameter 'name' cannot be null.");
         else if (name !== undefined)
@@ -700,11 +709,11 @@ export class UserClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate(_response);
+            return this.processCreateUser(_response);
         });
     }
 
-    protected processCreate(response: Response): Promise<void> {
+    protected processCreateUser(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 201) {
@@ -724,11 +733,12 @@ export class UserClient {
     }
 
     /**
-     * @param id (optional) 
+     * Deletes a user by their ID.
+     * @param id (optional) The ID of the user to delete.
      * @return OK
      */
-    delete(id: number | undefined): Promise<User> {
-        let url_ = this.baseUrl + "/User/Delete?";
+    deleteUser(id: number | undefined): Promise<User> {
+        let url_ = this.baseUrl + "/Users?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
         else if (id !== undefined)
@@ -743,11 +753,11 @@ export class UserClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDelete(_response);
+            return this.processDeleteUser(_response);
         });
     }
 
-    protected processDelete(response: Response): Promise<User> {
+    protected processDeleteUser(response: Response): Promise<User> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -766,14 +776,20 @@ export class UserClient {
     }
 }
 
+/** Data transfer object for a match. */
 export class MatchDto implements IMatchDto {
+    /** Gets or sets the ID of the match. */
     id?: number;
     player1!: UserDto;
     player2!: UserDto;
     winner?: UserDto;
+    /** Gets or sets the date of the match. */
     date?: Date | undefined;
+    /** Gets or sets the news related to the match. */
     news?: string | undefined;
+    /** Gets or sets the extra information 1 of the match. */
     extraInfo1?: string | undefined;
+    /** Gets or sets the extra information 2 of the match. */
     extraInfo2?: string | undefined;
 
     constructor(data?: IMatchDto) {
@@ -823,19 +839,28 @@ export class MatchDto implements IMatchDto {
     }
 }
 
+/** Data transfer object for a match. */
 export interface IMatchDto {
+    /** Gets or sets the ID of the match. */
     id?: number;
     player1: UserDto;
     player2: UserDto;
     winner?: UserDto;
+    /** Gets or sets the date of the match. */
     date?: Date | undefined;
+    /** Gets or sets the news related to the match. */
     news?: string | undefined;
+    /** Gets or sets the extra information 1 of the match. */
     extraInfo1?: string | undefined;
+    /** Gets or sets the extra information 2 of the match. */
     extraInfo2?: string | undefined;
 }
 
+/** Data Transfer Object for News */
 export class NewsDto implements INewsDto {
-    news?: string | undefined;
+    /** Gets or sets the news content. */
+    news!: string | undefined;
+    /** Gets or sets the date of the news. */
     date?: Date;
 
     constructor(data?: INewsDto) {
@@ -869,18 +894,29 @@ export class NewsDto implements INewsDto {
     }
 }
 
+/** Data Transfer Object for News */
 export interface INewsDto {
-    news?: string | undefined;
+    /** Gets or sets the news content. */
+    news: string | undefined;
+    /** Gets or sets the date of the news. */
     date?: Date;
 }
 
+/** Data Transfer Object for Ranking */
 export class RankingDto implements IRankingDto {
-    name?: string | undefined;
+    /** Gets or sets the name of the ranking. */
+    name!: string | undefined;
+    /** Gets or sets the number of games played. */
     gamesPlayed?: number;
+    /** Gets or sets the number of wins. */
     wins?: number;
+    /** Gets or sets the number of losses. */
     losses?: number;
+    /** Gets or sets the win percentage. */
     winPercentage?: number;
+    /** Gets or sets the Elo rating. */
     elo?: number;
+    /** Gets or sets the TAA rating. */
     taa?: number;
 
     constructor(data?: IRankingDto) {
@@ -924,20 +960,32 @@ export class RankingDto implements IRankingDto {
     }
 }
 
+/** Data Transfer Object for Ranking */
 export interface IRankingDto {
-    name?: string | undefined;
+    /** Gets or sets the name of the ranking. */
+    name: string | undefined;
+    /** Gets or sets the number of games played. */
     gamesPlayed?: number;
+    /** Gets or sets the number of wins. */
     wins?: number;
+    /** Gets or sets the number of losses. */
     losses?: number;
+    /** Gets or sets the win percentage. */
     winPercentage?: number;
+    /** Gets or sets the Elo rating. */
     elo?: number;
+    /** Gets or sets the TAA rating. */
     taa?: number;
 }
 
+/** Data Transfer Object for Rule */
 export class RuleDto implements IRuleDto {
+    /** Gets or sets the ID of the rule. */
     id?: number;
-    english?: string | undefined;
-    danish?: string | undefined;
+    /** Gets or sets the English text of the rule. */
+    english!: string | undefined;
+    /** Gets or sets the Danish text of the rule. */
+    danish!: string | undefined;
 
     constructor(data?: IRuleDto) {
         if (data) {
@@ -972,10 +1020,14 @@ export class RuleDto implements IRuleDto {
     }
 }
 
+/** Data Transfer Object for Rule */
 export interface IRuleDto {
+    /** Gets or sets the ID of the rule. */
     id?: number;
-    english?: string | undefined;
-    danish?: string | undefined;
+    /** Gets or sets the English text of the rule. */
+    english: string | undefined;
+    /** Gets or sets the Danish text of the rule. */
+    danish: string | undefined;
 }
 
 export class User implements IUser {
@@ -1026,10 +1078,14 @@ export interface IUser {
     elo?: number;
 }
 
+/** Data Transfer Object for User */
 export class UserDto implements IUserDto {
+    /** Gets or sets the ID of the user. */
     id?: number;
-    name?: string | undefined;
-    initials?: string | undefined;
+    /** Gets or sets the name of the user. */
+    name!: string | undefined;
+    /** Gets or sets the initials of the user. */
+    initials!: string | undefined;
 
     constructor(data?: IUserDto) {
         if (data) {
@@ -1064,10 +1120,14 @@ export class UserDto implements IUserDto {
     }
 }
 
+/** Data Transfer Object for User */
 export interface IUserDto {
+    /** Gets or sets the ID of the user. */
     id?: number;
-    name?: string | undefined;
-    initials?: string | undefined;
+    /** Gets or sets the name of the user. */
+    name: string | undefined;
+    /** Gets or sets the initials of the user. */
+    initials: string | undefined;
 }
 
 export class ApiException extends Error {

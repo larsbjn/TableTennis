@@ -18,7 +18,7 @@ public class RulesController(IRuleRepository ruleRepository)
     /// </summary>
     /// <param name="id">The ID of the rule to retrieve.</param>
     /// <returns>A rule object if found; otherwise, a 404 Not Found response.</returns>
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "GetRule")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<RuleDto>> Get(int id)
@@ -36,7 +36,7 @@ public class RulesController(IRuleRepository ruleRepository)
     /// Retrieves all rules.
     /// </summary>
     /// <returns>A list of all rules.</returns>
-    [HttpGet]
+    [HttpGet(Name = "GetAllRules")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IEnumerable<RuleDto>> GetAll()
     {
@@ -48,7 +48,7 @@ public class RulesController(IRuleRepository ruleRepository)
     /// </summary>
     /// <param name="rule">The rule to add.</param>
     /// <returns>A 201 Created response if the rule is successfully added; otherwise, a 400 Bad Request response.</returns>
-    [HttpPost]
+    [HttpPost(Name = "CreateRule")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Create(RuleDto rule)
@@ -66,7 +66,7 @@ public class RulesController(IRuleRepository ruleRepository)
     /// </summary>
     /// <param name="id">The ID of the rule to delete.</param>
     /// <returns>A 200 OK response if the rule is successfully deleted.</returns>
-    [HttpDelete]
+    [HttpDelete(Name = "DeleteRule")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> Delete(int id)
     {

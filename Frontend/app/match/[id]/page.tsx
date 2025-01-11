@@ -19,7 +19,7 @@ export default function Match({params}: { params: Promise<{ id: string }> }) {
     useEffect(() => {
         const getId = async () => {
             const matchId = await params;
-            matchClient.get(Number(matchId.id)).then((response) => {
+            matchClient.getMatch(Number(matchId.id)).then((response) => {
                 setMatch(response)
                 setIsEditing(response.winner === undefined);
                 setNews(response.news ? response.news : "");
@@ -39,13 +39,13 @@ export default function Match({params}: { params: Promise<{ id: string }> }) {
 
     function save(entity: MatchDto = match, updateWinner: boolean = false) {
         const payload = {
-            id: entity.id,
+            id: entity.id ?? 0,
             winner: entity.winner,
             news: news,
             extraInfo1: extraInfo1,
             extraInfo2: extraInfo2
         }
-        matchClient.update(payload.id, payload.winner?.id, payload.news, payload.extraInfo1, payload.extraInfo2, updateWinner).then(r => {
+        matchClient.updateMatch(payload.id, payload.winner?.id, payload.news, payload.extraInfo1, payload.extraInfo2, updateWinner).then(r => {
             setMatch(r);
         });
         setIsEditing(false);

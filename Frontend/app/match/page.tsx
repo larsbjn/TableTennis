@@ -22,7 +22,7 @@ export default function StartGame() {
     const [player2, setPlayer2] = React.useState<string>('');
 
     useEffect(() => {
-        userClient.getAll().then((response) => {
+        userClient.getAllUsers().then((response) => {
             setPlayers(response.map((player: UserDto) => ({
                 value: player.id?.toString() || '',
                 label: player.name || ''
@@ -44,7 +44,7 @@ export default function StartGame() {
     })
 
     function createMatch() {
-        matchClient.create(Number(player1), Number(player2)).then((response) => {
+        matchClient.createMatch(Number(player1), Number(player2)).then((response) => {
             window.location.href = `/match/${response}`;
         });
     }

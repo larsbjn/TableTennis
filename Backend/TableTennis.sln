@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateTypeScriptAPIClient", "GenerateTypeScriptAPIClient\GenerateTypeScriptAPIClient.csproj", "{A8086F9C-A6B7-4BFC-8A2D-5E22CC298499}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Programs", "Programs", "{DC56E814-2FB4-469C-BB2D-91F3EC88E5B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{A8086F9C-A6B7-4BFC-8A2D-5E22CC298499}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8086F9C-A6B7-4BFC-8A2D-5E22CC298499}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8086F9C-A6B7-4BFC-8A2D-5E22CC298499}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5D734CBF-EBB9-4485-BAE2-7C35BF422ADE} = {DC56E814-2FB4-469C-BB2D-91F3EC88E5B4}
+		{A8086F9C-A6B7-4BFC-8A2D-5E22CC298499} = {DC56E814-2FB4-469C-BB2D-91F3EC88E5B4}
 	EndGlobalSection
 EndGlobal
