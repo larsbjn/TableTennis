@@ -1,4 +1,3 @@
-using Domain.Interfaces;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Models;
@@ -12,11 +11,11 @@ namespace API.Services;
 public class EloService(IUserRepository userRepository) : IEloService
 {
     /// <summary>
-    /// Calculates the Elo rating for a match.
+    /// Calculates and persists the Elo rating for each player based on a match.
     /// </summary>
     /// <param name="match">The match for which to calculate the Elo rating.</param>
     /// <exception cref="ArgumentException">Thrown when a player is not found.</exception>
-    public async Task CalculateElo(Match match)
+    public async Task AdjustEloForMatch(Match match)
     {
         var playerA = await userRepository.Get(match.Player1.Id);
         var playerB = await userRepository.Get(match.Player2.Id);

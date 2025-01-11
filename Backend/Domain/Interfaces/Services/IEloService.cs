@@ -4,5 +4,5 @@ namespace Domain.Interfaces.Services;
 
 public interface IEloService
 {
-    public Task CalculateElo(Match match);
+    public Task AdjustEloForMatch(Match match);
 }
