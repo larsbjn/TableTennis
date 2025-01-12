@@ -72,9 +72,10 @@ export class MatchesClient {
      * @param extraInfo1 (optional) Gets or sets the extra information 1 of the match.
      * @param extraInfo2 (optional) Gets or sets the extra information 2 of the match.
      * @param updateWinner (optional) Gets or sets a value indicating whether to update the winner.
+     * @param scores Gets or sets the scores of the players.
      * @return OK
      */
-    updateMatch(matchId: number, winnerId: number | undefined, news: string | undefined, extraInfo1: string | undefined, extraInfo2: string | undefined, updateWinner: boolean | undefined): Promise<MatchDto> {
+    updateMatch(matchId: number, winnerId: number | undefined, news: string | undefined, extraInfo1: string | undefined, extraInfo2: string | undefined, updateWinner: boolean | undefined, scores: UpdateScoreDto[]): Promise<MatchDto> {
         let url_ = this.baseUrl + "/Matches/{matchId}?";
         if (matchId === undefined || matchId === null)
             throw new Error("The parameter 'matchId' must be defined.");
@@ -99,6 +100,15 @@ export class MatchesClient {
             throw new Error("The parameter 'updateWinner' cannot be null.");
         else if (updateWinner !== undefined)
             url_ += "UpdateWinner=" + encodeURIComponent("" + updateWinner) + "&";
+        if (scores === undefined || scores === null)
+            throw new Error("The parameter 'scores' must be defined and cannot be null.");
+        else
+            scores && scores.forEach((item, index) => {
+                for (const attr in item)
+        			if (item.hasOwnProperty(attr)) {
+        				url_ += "Scores[" + index + "]." + attr + "=" + encodeURIComponent("" + (item as any)[attr]) + "&";
+        			}
+            });
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -184,9 +194,10 @@ export class MatchesClient {
      * Adds a new match.
      * @param player1Id (optional) Player 1 id
      * @param player2Id (optional) Player 2 id
+     * @param numberOfSets (optional) The number of sets
      * @return Created
      */
-    createMatch(player1Id: number | undefined, player2Id: number | undefined): Promise<number> {
+    createMatch(player1Id: number | undefined, player2Id: number | undefined, numberOfSets: NumberOfSets | undefined): Promise<number> {
         let url_ = this.baseUrl + "/Matches?";
         if (player1Id === null)
             throw new Error("The parameter 'player1Id' cannot be null.");
@@ -196,6 +207,10 @@ export class MatchesClient {
             throw new Error("The parameter 'player2Id' cannot be null.");
         else if (player2Id !== undefined)
             url_ += "player2Id=" + encodeURIComponent("" + player2Id) + "&";
+        if (numberOfSets === null)
+            throw new Error("The parameter 'numberOfSets' cannot be null.");
+        else if (numberOfSets !== undefined)
+            url_ += "numberOfSets=" + encodeURIComponent("" + numberOfSets) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -780,11 +795,13 @@ export class UsersClient {
 export class MatchDto implements IMatchDto {
     /** Gets or sets the ID of the match. */
     id?: number;
-    player1!: UserDto;
-    player2!: UserDto;
-    winner?: UserDto;
+    /** Gets or sets the first player of the match. */
+    players!: PlayerDto[] | undefined;
     /** Gets or sets the date of the match. */
     date?: Date | undefined;
+    numberOfSets?: NumberOfSets;
+    /** Determines whether the match is finished. */
+    isFinished?: boolean;
     /** Gets or sets the news related to the match. */
     news?: string | undefined;
     /** Gets or sets the extra information 1 of the match. */
@@ -799,19 +816,19 @@ export class MatchDto implements IMatchDto {
                     (<any>this)[property] = (<any>data)[property];
             }
         }
-        if (!data) {
-            this.player1 = new UserDto();
-            this.player2 = new UserDto();
-        }
     }
 
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.player1 = _data["player1"] ? UserDto.fromJS(_data["player1"]) : new UserDto();
-            this.player2 = _data["player2"] ? UserDto.fromJS(_data["player2"]) : new UserDto();
-            this.winner = _data["winner"] ? UserDto.fromJS(_data["winner"]) : <any>undefined;
+            if (Array.isArray(_data["players"])) {
+                this.players = [] as any;
+                for (let item of _data["players"])
+                    this.players!.push(PlayerDto.fromJS(item));
+            }
             this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+            this.numberOfSets = _data["numberOfSets"];
+            this.isFinished = _data["isFinished"];
             this.news = _data["news"];
             this.extraInfo1 = _data["extraInfo1"];
             this.extraInfo2 = _data["extraInfo2"];
@@ -828,10 +845,14 @@ export class MatchDto implements IMatchDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["player1"] = this.player1 ? this.player1.toJSON() : <any>undefined;
-        data["player2"] = this.player2 ? this.player2.toJSON() : <any>undefined;
-        data["winner"] = this.winner ? this.winner.toJSON() : <any>undefined;
+        if (Array.isArray(this.players)) {
+            data["players"] = [];
+            for (let item of this.players)
+                data["players"].push(item.toJSON());
+        }
         data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["numberOfSets"] = this.numberOfSets;
+        data["isFinished"] = this.isFinished;
         data["news"] = this.news;
         data["extraInfo1"] = this.extraInfo1;
         data["extraInfo2"] = this.extraInfo2;
@@ -843,11 +864,13 @@ export class MatchDto implements IMatchDto {
 export interface IMatchDto {
     /** Gets or sets the ID of the match. */
     id?: number;
-    player1: UserDto;
-    player2: UserDto;
-    winner?: UserDto;
+    /** Gets or sets the first player of the match. */
+    players: PlayerDto[] | undefined;
     /** Gets or sets the date of the match. */
     date?: Date | undefined;
+    numberOfSets?: NumberOfSets;
+    /** Determines whether the match is finished. */
+    isFinished?: boolean;
     /** Gets or sets the news related to the match. */
     news?: string | undefined;
     /** Gets or sets the extra information 1 of the match. */
@@ -900,6 +923,129 @@ export interface INewsDto {
     news: string | undefined;
     /** Gets or sets the date of the news. */
     date?: Date;
+}
+
+export enum NumberOfSets {
+    _3 = 3,
+    _5 = 5,
+}
+
+export class Player implements IPlayer {
+    id?: number;
+    user!: User;
+    isWinner?: boolean;
+    score?: number;
+    elo?: number;
+    matchId?: number;
+
+    constructor(data?: IPlayer) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.user = new User();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.user = _data["user"] ? User.fromJS(_data["user"]) : new User();
+            this.isWinner = _data["isWinner"];
+            this.score = _data["score"];
+            this.elo = _data["elo"];
+            this.matchId = _data["matchId"];
+        }
+    }
+
+    static fromJS(data: any): Player {
+        data = typeof data === 'object' ? data : {};
+        let result = new Player();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["user"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["isWinner"] = this.isWinner;
+        data["score"] = this.score;
+        data["elo"] = this.elo;
+        data["matchId"] = this.matchId;
+        return data;
+    }
+}
+
+export interface IPlayer {
+    id?: number;
+    user: User;
+    isWinner?: boolean;
+    score?: number;
+    elo?: number;
+    matchId?: number;
+}
+
+/** Data transfer object for a player. */
+export class PlayerDto implements IPlayerDto {
+    user!: UserDto;
+    /** Gets or sets a value indicating whether the player is the winner. */
+    isWinner?: boolean;
+    /** Gets or sets the score of the player. */
+    score?: number;
+    /** Gets or sets the Elo rating of the player. */
+    elo?: number;
+
+    constructor(data?: IPlayerDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.user = new UserDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.user = _data["user"] ? UserDto.fromJS(_data["user"]) : new UserDto();
+            this.isWinner = _data["isWinner"];
+            this.score = _data["score"];
+            this.elo = _data["elo"];
+        }
+    }
+
+    static fromJS(data: any): PlayerDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PlayerDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["user"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["isWinner"] = this.isWinner;
+        data["score"] = this.score;
+        data["elo"] = this.elo;
+        return data;
+    }
+}
+
+/** Data transfer object for a player. */
+export interface IPlayerDto {
+    user: UserDto;
+    /** Gets or sets a value indicating whether the player is the winner. */
+    isWinner?: boolean;
+    /** Gets or sets the score of the player. */
+    score?: number;
+    /** Gets or sets the Elo rating of the player. */
+    elo?: number;
 }
 
 /** Data Transfer Object for Ranking */
@@ -1030,11 +1176,58 @@ export interface IRuleDto {
     danish: string | undefined;
 }
 
+/** Represents the score update for a player. */
+export class UpdateScoreDto implements IUpdateScoreDto {
+    /** Gets or sets the ID of the player. */
+    playerId?: number;
+    /** Gets or sets the score of the player. */
+    score?: number;
+
+    constructor(data?: IUpdateScoreDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.playerId = _data["playerId"];
+            this.score = _data["score"];
+        }
+    }
+
+    static fromJS(data: any): UpdateScoreDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateScoreDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["playerId"] = this.playerId;
+        data["score"] = this.score;
+        return data;
+    }
+}
+
+/** Represents the score update for a player. */
+export interface IUpdateScoreDto {
+    /** Gets or sets the ID of the player. */
+    playerId?: number;
+    /** Gets or sets the score of the player. */
+    score?: number;
+}
+
 export class User implements IUser {
     id?: number;
-    name?: string | undefined;
-    initials?: string | undefined;
+    name!: string | undefined;
+    initials!: string | undefined;
     elo?: number;
+    players?: Player[] | undefined;
 
     constructor(data?: IUser) {
         if (data) {
@@ -1051,6 +1244,11 @@ export class User implements IUser {
             this.name = _data["name"];
             this.initials = _data["initials"];
             this.elo = _data["elo"];
+            if (Array.isArray(_data["players"])) {
+                this.players = [] as any;
+                for (let item of _data["players"])
+                    this.players!.push(Player.fromJS(item));
+            }
         }
     }
 
@@ -1067,15 +1265,21 @@ export class User implements IUser {
         data["name"] = this.name;
         data["initials"] = this.initials;
         data["elo"] = this.elo;
+        if (Array.isArray(this.players)) {
+            data["players"] = [];
+            for (let item of this.players)
+                data["players"].push(item.toJSON());
+        }
         return data;
     }
 }
 
 export interface IUser {
     id?: number;
-    name?: string | undefined;
-    initials?: string | undefined;
+    name: string | undefined;
+    initials: string | undefined;
     elo?: number;
+    players?: Player[] | undefined;
 }
 
 /** Data Transfer Object for User */
