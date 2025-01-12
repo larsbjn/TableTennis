@@ -29,4 +29,26 @@ public class UpdateMatchDto
     /// Gets or sets a value indicating whether to update the winner.
     /// </summary>
     public bool UpdateWinner { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the scores of the players.
+    /// </summary>
+    public required List<UpdateScoreDto> Scores { get; set; }
+    
+}
+
+/// <summary>
+/// Represents the score update for a player.
+/// </summary>
+public class UpdateScoreDto
+{
+    /// <summary>
+    /// Gets or sets the ID of the player.
+    /// </summary>
+    public int PlayerId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the score of the player.
+    /// </summary>
+    public int Score { get; set; }
 }

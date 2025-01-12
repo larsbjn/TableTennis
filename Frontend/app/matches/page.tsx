@@ -124,9 +124,10 @@ export default function Matches() {
                     <tr onClick={() => {
                         window.location.href = `/match/${match.id}`;
                     }} className={styles.row} key={match.id}>
-                        <td>{match.player1.name}</td>
-                        <td>{match.player2.name}</td>
-                        <td>{match.winner?.name}</td>
+                        {match.players?.map((player) => (
+                            <td key={player.user.name}>{player.user.name}</td>
+                        ))}
+                        <td>{match.players?.find(player => player.isWinner)?.user.name}</td>
                         <td>{match.date?.toLocaleDateString()}</td>
                         <td>{match.news && match.news?.length > 60 ? `${match.news.substring(0, 60)}...` : match.news}</td>
                         <td>{match.extraInfo1 && match.extraInfo1?.length > 60 ? `${match.extraInfo1.substring(0, 60)}...` : match.extraInfo1}</td>

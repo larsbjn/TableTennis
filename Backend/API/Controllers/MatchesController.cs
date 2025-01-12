@@ -1,7 +1,9 @@
+using System.Runtime.Intrinsics.X86;
 using API.Handlers;
 using API.Hubs;
 using API.Interfaces.Hubs;
 using API.Models.Dtos;
+using Domain;
 using Domain.Interfaces;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
@@ -68,11 +70,16 @@ public class MatchesController(
             var match = await matchRepository.Get(matchId);
             if (match == null) return BadRequest();
 
-            match.Winner = winner;
             match.News = updateMatchDto.News;
             match.ExtraInfo1 = updateMatchDto.ExtraInfo1;
             match.ExtraInfo2 = updateMatchDto.ExtraInfo2;
-
+            match.IsFinished = true;
+            foreach (var matchPlayer in match.Players)
+            {
+                matchPlayer.IsWinner = matchPlayer.User.Id == updateMatchDto.WinnerId;
+                matchPlayer.Score = updateMatchDto.Scores.First(s => s.PlayerId == matchPlayer.User.Id).Score;
+            }
+            
             var updatedMatch = await matchRepository.Update(match);
 
             if (updateMatchDto.UpdateWinner)
@@ -91,7 +98,8 @@ public class MatchesController(
             var news = latestMatches.Select(m => new NewsDto { News = m.News ?? "", Date = m.Date ?? DateTime.Now })
                 .ToList();
             await newsHub.Clients.All.UpdatedNews(news.ToList());
-            return Ok(updatedMatch);
+            var matchDto = (MatchDto)updatedMatch;
+            return Ok(matchDto);
         }
         catch (ArgumentException)
         {
@@ -115,15 +123,16 @@ public class MatchesController(
     /// </summary>
     /// <param name="player1Id">Player 1 id</param>
     /// <param name="player2Id">Player 2 id</param>
+    /// <param name="numberOfSets">The number of sets</param>
     /// <returns>A 201 Created response if the match is successfully added; otherwise, a 400 Bad Request response.</returns>
     [HttpPost(Name = "CreateMatch")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<int>> Create(int player1Id, int player2Id)
+    public async Task<ActionResult<int>> Create(int player1Id, int player2Id, NumberOfSets numberOfSets)
     {
         try
         {
-            var match = await matchRepository.Create(player1Id, player2Id);
+            var match = await matchRepository.Create(player1Id, player2Id, numberOfSets);
             return Created($"/match/{match}", match);
         }
         catch (ArgumentException)

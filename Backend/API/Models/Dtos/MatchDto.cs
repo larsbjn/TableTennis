@@ -1,3 +1,4 @@
+using Domain;
 using Domain.Models;
 
 namespace API.Models.Dtos;
@@ -15,23 +16,23 @@ public class MatchDto
     /// <summary>
     /// Gets or sets the first player of the match.
     /// </summary>
-    public required UserDto Player1 { get; set; }
-
-    /// <summary>
-    /// Gets or sets the second player of the match.
-    /// </summary>
-    public required UserDto Player2 { get; set; }
-
-    /// <summary>
-    /// Gets or sets the winner of the match.
-    /// </summary>
-    public UserDto? Winner { get; set; }
+    public required PlayerDto[] Players { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the date of the match.
     /// </summary>
     public DateTime? Date { get; set; }
 
+    /// <summary>
+    /// The number of sets in the match.
+    /// </summary>
+    public NumberOfSets NumberOfSets { get; set; }
+    
+    /// <summary>
+    /// Determines whether the match is finished.
+    /// </summary>
+    public bool IsFinished { get; set; }
+    
     /// <summary>
     /// Gets or sets the news related to the match.
     /// </summary>
@@ -56,17 +57,14 @@ public class MatchDto
         var dto = new MatchDto
         {
             Id = match.Id,
-            Player1 = match.Player1,
-            Player2 = match.Player2,
+            Players = match.Players.Select(player => (PlayerDto)player).ToArray(),
+            NumberOfSets = match.NumberOfSets,
             Date = match.Date,
             News = match.News,
             ExtraInfo1 = match.ExtraInfo1,
-            ExtraInfo2 = match.ExtraInfo2
+            ExtraInfo2 = match.ExtraInfo2,
+            IsFinished = match.IsFinished
         };
-        if (match.Winner != null)
-        {
-            dto.Winner = match.Winner;
-        }
 
         return dto;
     }

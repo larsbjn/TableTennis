@@ -9,7 +9,7 @@ public class UserRepository(DatabaseContext databaseContext) : IUserRepository
 {
     public async Task<IEnumerable<User>> GetAll()
     {
-        return await databaseContext.Users.ToListAsync();
+        return await databaseContext.Users.Include(u => u.Players).ToListAsync();
     }
 
     public async Task<User?> Get(int id)

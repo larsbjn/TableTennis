@@ -6,7 +6,7 @@ import {SingleValue, Theme} from "react-select";
 import styles from './match.module.scss';
 import {matchClient, userClient} from "@/api-clients";
 import Spinner from "@/components/spinner/spinner";
-import {UserDto} from "@/api-client";
+import {NumberOfSets, UserDto} from "@/api-client";
 
 interface Option {
     value: string;
@@ -20,6 +20,7 @@ export default function StartGame() {
     const [players, setPlayers] = React.useState<Array<Option>>([]);
     const [player1, setPlayer1] = React.useState<string>('');
     const [player2, setPlayer2] = React.useState<string>('');
+    const [numberOfSets, setNumberOfSets] = React.useState<NumberOfSets>(NumberOfSets._3);
 
     useEffect(() => {
         userClient.getAllUsers().then((response) => {
@@ -44,7 +45,7 @@ export default function StartGame() {
     })
 
     function createMatch() {
-        matchClient.createMatch(Number(player1), Number(player2)).then((response) => {
+        matchClient.createMatch(Number(player1), Number(player2), numberOfSets).then((response) => {
             window.location.href = `/match/${response}`;
         });
     }
@@ -91,7 +92,14 @@ export default function StartGame() {
                 </Col>
             </Row>
             <Row>
-                <Col className={styles.alignCenter}>
+                <Col className={`${styles.alignCenter} ${styles.settings}`}>
+                    <NoSSR options={[{value: NumberOfSets._3, label: 'Best of 3'}, {value: NumberOfSets._5, label: 'Best of 5'}]}
+                           theme={theme}
+                           defaultValue={{value: NumberOfSets._3, label: 'Best of 3'}}
+                           onChange={(newValue: unknown) => {
+                               setNumberOfSets((newValue as SingleValue<{value: NumberOfSets, label: string}>)?.value || NumberOfSets._3);
+                           }}
+                    />
                     <Button disabled={player1 === '' || player2 === ''} onClick={createMatch} variant="primary"
                             type="submit" style={{marginTop: "15px"}}>
                         Start Match
