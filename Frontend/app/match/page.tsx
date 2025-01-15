@@ -95,7 +95,7 @@ export default function StartGame() {
                 <Col className={`${styles.alignCenter} ${styles.settings}`}>
                     <NoSSR options={[{value: NumberOfSets._3, label: 'Best of 3'}, {value: NumberOfSets._5, label: 'Best of 5'}]}
                            theme={theme}
-                           defaultValue={{value: NumberOfSets._3, label: 'Best of 3'}}
+                           defaultValue={{value: NumberOfSets._5, label: 'Best of 5'}}
                            onChange={(newValue: unknown) => {
                                setNumberOfSets((newValue as SingleValue<{value: NumberOfSets, label: string}>)?.value || NumberOfSets._3);
                            }}
