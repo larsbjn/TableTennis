@@ -5,6 +5,7 @@ import Navigation from "@/components/navigation/navigation";
 import React from "react";
 import NewsTicker from "@/components/news-banner/news-ticker";
 import "./global.scss";
+import KeepAlive from "@/components/keep-alive";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ export default function RootLayout({
         {children}
         </div>
         <NewsTicker />
+        <KeepAlive />
       </body>
     </html>
   );
