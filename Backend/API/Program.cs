@@ -56,6 +56,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapHub<RankingHub>("/rankingHub");
 app.MapHub<NewsHub>("/newsHub");
+app.MapHub<KeepAliveHub>("/keepAliveHub");
 
 // app.UseHttpsRedirection();
 app.UseCors("AllowSpecificOrigin");
