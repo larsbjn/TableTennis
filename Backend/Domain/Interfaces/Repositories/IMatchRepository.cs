@@ -5,6 +5,7 @@ namespace Domain.Interfaces.Repositories;
 public interface IMatchRepository
 {
     public Task<IEnumerable<Match>> GetAll();
+    public Task<IEnumerable<Match>> GetBetweenDates(DateTime startDate, DateTime endDate);
     public Task<IEnumerable<Match>> GetLatestWithNews(int count);
     public Task<Match?> Get(int id);
     public Task<Match> Update(Match match);

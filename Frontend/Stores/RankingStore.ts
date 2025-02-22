@@ -1,10 +1,12 @@
 import {makeAutoObservable} from "mobx";
 import * as signalR from "@microsoft/signalr";
-import {rankingClient} from "@/api-clients";
+import {rankingClient, seasonClient} from "@/api-clients";
 import {RankingDto} from "@/api-client";
 
 export class RankingStore {
     rankings: Array<RankingDto> = [];
+    seasons: Array<string> = [];
+    currentSeason: number = 0;
 
     constructor() {
         makeAutoObservable(this);
@@ -22,9 +24,23 @@ export class RankingStore {
     }
 
     fetchInitialRankings() {
-        rankingClient.getAllRankings().then((response) => {
-            this.updateRankings(response);
+        seasonClient.getAllSeasons().then((response) => {
+            this.seasons = response;
+            this.changeSeason(response.length);       
         });
+    }
+    
+    changeSeason(season: number) {
+        this.currentSeason = season;
+        if (season === 0) {
+            rankingClient.getAllRankings().then((response) => {
+                this.updateRankings(response);
+            });
+        } else {
+            rankingClient.getRankingsForSeason(season).then((response) => {
+                this.updateRankings(response);
+            });
+        }
     }
 
     updateRankings(rankings: Array<RankingDto>) {

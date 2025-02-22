@@ -88,8 +88,7 @@ public class MatchesController(
 
                 // Update rankings
                 var matches = await matchRepository.GetAll();
-                var users = await userRepository.GetAll();
-                var rankings = RankingHandler.GetRankings(matches.ToList(), users.ToList());
+                var rankings = RankingHandler.GetRankings(matches.ToList());
                 await rankingHub.Clients.All.UpdatedRanking(rankings);
             }
 

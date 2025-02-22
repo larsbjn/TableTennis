@@ -1,4 +1,4 @@
-import {MatchesClient, NewsClient, RankingsClient, RulesClient, UsersClient} from "@/api-client";
+import {MatchesClient, NewsClient, RankingsClient, RulesClient, SeasonsClient, UsersClient} from "@/api-client";
 const url = process.env.NEXT_PUBLIC_API_URL || "https://localhost:7116";
 
 if (process.env.NODE_ENV === 'development') {
@@ -21,5 +21,9 @@ export const newsClient = new NewsClient(url, {
 });
 
 export const ruleClient = new RulesClient(url, {
+    fetch: (url, init) => fetch(url, init)
+});
+
+export const seasonClient = new SeasonsClient(url, {
     fetch: (url, init) => fetch(url, init)
 });

@@ -16,6 +16,15 @@ public class MatchRepository(DatabaseContext databaseContext) : IMatchRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Match>> GetBetweenDates(DateTime startDate, DateTime endDate)
+    {
+        return await databaseContext.Matches
+            .Include(m => m.Players)
+            .ThenInclude(p => p.User)
+            .Where(m => m.Date >= startDate && m.Date <= endDate)
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<Match>> GetLatestWithNews(int count)
     {
         return await databaseContext.Matches
