@@ -16,8 +16,8 @@ export class RankingStore {
             .withUrl(url + "/rankingHub")
             .build();
 
-        connection.on("UpdatedRanking", (rankings: RankingDto[]) => {
-            this.updateRankings(rankings);
+        connection.on("NotifyAboutUpdatedRanking", () => {
+            this.changeSeason(this.currentSeason);
         });
 
         connection.start().catch((err) => document.write(err));

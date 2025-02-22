@@ -13,9 +13,8 @@ public class RankingHub : Hub<IRankingHub>
     /// <summary>
     /// Notifies all clients of an updated ranking.
     /// </summary>
-    /// <param name="rankingDtos">New rankings</param>
-    public async Task UpdatedRanking(List<RankingDto> rankingDtos)
+    public async Task NotifyAboutUpdatedRanking()
     {
-        await Clients.All.UpdatedRanking(rankingDtos);
+        await Clients.All.NotifyAboutUpdatedRanking();
     }
 }
