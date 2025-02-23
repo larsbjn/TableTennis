@@ -79,7 +79,7 @@ export default function StartGame() {
                         value: NumberOfSets._5,
                         label: 'Best of 5'
                     }]}
-                              defaultValue={{value: NumberOfSets._3, label: 'Best of 3'}}
+                              defaultValue={{value: NumberOfSets._5, label: 'Best of 5'}}
                               onChange={(newValue: unknown) => {
                                   setNumberOfSets((newValue as SingleValue<{
                                       value: NumberOfSets,
