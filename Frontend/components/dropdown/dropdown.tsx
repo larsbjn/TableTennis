@@ -1,8 +1,9 @@
 import dynamic from "next/dynamic";
-import {Theme} from "react-select";
+import {ActionMeta, Theme} from "react-select";
 import {observer} from "mobx-react";
 
 export interface Option {
+    /* eslint @typescript-eslint/no-explicit-any: "off" */
     value: any;
     label: string;
 }
@@ -11,7 +12,7 @@ export interface DropdownProps {
     options: Array<Option>;
     defaultValue?: Option;
     searchable?: boolean;
-    onChange: (newValue: Option, actionMeta: any) => void;
+    onChange: (newValue: Option, actionMeta: ActionMeta<unknown>) => void;
 }
 
 const theme = (theme: Theme) => ({

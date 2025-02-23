@@ -1,8 +1,7 @@
 'use client'
 import {Button, Col, Container, Row} from "react-bootstrap";
 import React, {useEffect} from "react";
-import dynamic from "next/dynamic";
-import {SingleValue, Theme} from "react-select";
+import {SingleValue} from "react-select";
 import styles from './match.module.scss';
 import {matchClient, userClient} from "@/api-clients";
 import Spinner from "@/components/spinner/spinner";

@@ -6,11 +6,7 @@ import Spinner from "@/components/spinner/spinner";
 import React from "react";
 import {newsStore} from "@/Stores/NewsStore";
 import styles from "@/app/dashboard.module.scss";
-import {SingleValue} from "react-select";
-import dynamic from "next/dynamic";
 import Dropdown, {Option} from "@/components/dropdown/dropdown";
-import {SeasonsClient} from "@/api-client";
-import {seasonClient} from "@/api-clients";
 
 const Dashboard = observer(() => {
 
