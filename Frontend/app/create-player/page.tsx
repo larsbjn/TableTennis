@@ -1,11 +1,13 @@
+'use client'
 import {Button, Col, Container, Row} from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import styles from './create-player.module.scss';
-import React from "react";
-import {createPlayer} from "@/app/create-player/actions";
+import React, {useState} from "react";
+import {userClient} from "@/api-clients";
+import {redirect} from "next/navigation";
 
 const Page: React.FC = () => {
-
+    const [name, setName] = useState("");
     return (
         <Container className={styles.container}>
             <Row>
@@ -15,11 +17,17 @@ const Page: React.FC = () => {
             </Row>
             <Row>
                 <Col lg={{offset: 3, span: 6}}>
-                    <Form action={createPlayer}>
+                    <Form>
                         <Form.Label>Name</Form.Label>
-                        <Form.Control name={"name"} size="lg" type="text" placeholder="John Doe"/>
+                        <Form.Control name={"name"} size="lg" type="text" placeholder="John Doe" value={name}
+                                      onChange={(e) => setName(e.target.value)}/>
                         <br/>
-                        <Button variant="primary" type="submit">
+                        <Button variant="primary" onClick={async (e) => {
+                            e.preventDefault();
+                            e.currentTarget.disabled = true;
+                            await userClient.createUser(name, "");
+                            redirect('/');
+                        }}>
                             Create
                         </Button>
                     </Form>
