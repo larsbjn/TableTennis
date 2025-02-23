@@ -10,6 +10,5 @@ public interface IRankingHub
     /// <summary>
     /// Notifies clients that the ranking has been updated.
     /// </summary>
-    /// <param name="rankings">The updated list of rankings.</param>
-    Task UpdatedRanking(List<RankingDto> rankings);
+    Task NotifyAboutUpdatedRanking();
 }

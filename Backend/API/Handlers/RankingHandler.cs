@@ -13,12 +13,13 @@ public static class RankingHandler
     /// Gets the rankings based on the provided matches and users.
     /// </summary>
     /// <param name="matches">The list of matches.</param>
-    /// <param name="users">The list of users.</param>
     /// <returns>A list of ranking data transfer objects.</returns>
-    public static List<RankingDto> GetRankings(List<Match> matches, List<User> users)
+    public static List<RankingDto> GetRankings(List<Match> matches)
     {
         var rankings = new Dictionary<int, RankingDto>();
 
+        var users = matches.Select(m => m.Players.Select(p => p.User)).SelectMany(u => u).Distinct().ToList();
+        
         // Add all users
         foreach (var user in users)
         {

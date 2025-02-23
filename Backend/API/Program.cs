@@ -41,6 +41,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 builder.Services.AddScoped<IRuleRepository, RuleRepository>();
 builder.Services.AddScoped<IEloService, EloService>();
+builder.Services.AddScoped<ISeasonService, SeasonService>();
 
 builder.Services.AddSignalR();
 

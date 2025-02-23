@@ -128,7 +128,7 @@ export default function Matches() {
                             <td key={player.user.name}>{player.user.name}</td>
                         ))}
                         <td>{match.players?.find(player => player.isWinner)?.user.name}</td>
-                        <td>{match.date?.toLocaleDateString()}</td>
+                        <td>{match.date?.toLocaleDateString('en-GB')}</td>
                         <td>{match.news && match.news?.length > 60 ? `${match.news.substring(0, 60)}...` : match.news}</td>
                         <td>{match.extraInfo1 && match.extraInfo1?.length > 60 ? `${match.extraInfo1.substring(0, 60)}...` : match.extraInfo1}</td>
                         <td>{match.extraInfo2 && match.extraInfo2?.length > 60 ? `${match.extraInfo2.substring(0, 60)}...` : match.extraInfo2}</td>
